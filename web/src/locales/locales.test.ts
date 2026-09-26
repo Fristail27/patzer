@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import en from './en.json';
 import de from './de.json';
+import ru from './ru.json';
 import { goalText } from '../lib/goalText';
 
 type Tree = { [k: string]: string | Tree };
@@ -30,6 +31,33 @@ describe('de locale', () => {
   it('keeps every interpolation placeholder', () => {
     for (const key of Object.keys(enFlat)) {
       expect(placeholders(deFlat[key] ?? ''), key).toEqual(placeholders(enFlat[key]!));
+    }
+  });
+});
+
+// Russian has four CLDR plural categories (one / few / many / other) where
+// English has two, and i18next does not fall back from a missing "_few" to
+// "_other" — it falls back to English. So every pluralised English key must
+// carry all four Russian forms, and everything else must match one to one.
+describe('ru locale', () => {
+  const enFlat = flatten(en as Tree);
+  const ruFlat = flatten(ru as Tree);
+  const PLURAL = /_(one|few|many|other)$/;
+  const RU_FORMS = ['one', 'few', 'many', 'other'];
+
+  it('has every key that en has, and nothing else', () => {
+    const expected = new Set<string>();
+    for (const key of Object.keys(enFlat)) {
+      if (PLURAL.test(key)) for (const f of RU_FORMS) expected.add(key.replace(PLURAL, `_${f}`));
+      else expected.add(key);
+    }
+    expect(Object.keys(ruFlat).sort()).toEqual([...expected].sort());
+  });
+
+  it('keeps every interpolation placeholder', () => {
+    for (const [key, value] of Object.entries(ruFlat)) {
+      const enKey = PLURAL.test(key) ? key.replace(PLURAL, '_other') : key;
+      expect(placeholders(value), key).toEqual(placeholders(enFlat[enKey]!));
     }
   });
 });

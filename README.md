@@ -49,7 +49,7 @@ Patzer is a tiny, self-hosted take on the Chess.com / Lichess workflow you actua
 - **AI Coach (your LLM)** — point at any [Ollama](https://ollama.com) or [vLLM](https://docs.vllm.ai) host (or, if you have no GPU to spare, the hosted DeepSeek API). Audience-tuned voices for Kid / Beginner / Intermediate / Advanced. Anti-hallucination by design — chess facts are computed server-side; the LLM only renders them.
 - **Family-ready** — multi-user with admin console, open / invite-only / closed sign-up, per-profile language, kid-mode blunder warnings, "horsey" piece names for the youngest profiles.
 - **Opening trainer** — drill 16 built-in main lines or any line from your own repertoire; the moves you miss come back in a daily review queue.
-- **Multilingual** — English, Bulgarian, Spanish and German out of the box, UI *and* coach prompts. Adding a language is one table entry per file — see CONTRIBUTING.
+- **Multilingual** — English, Bulgarian, Spanish, German and Russian out of the box, UI *and* coach prompts. Adding a language is one table entry per file — see CONTRIBUTING.
 - **Self-hosted, single container** — runs on a Pi, a NAS, an old laptop. Your games never leave home.
 - **Phone-friendly** — full-width board, sticky action bar and a swipe-up move list on small screens.
 - **Tells you when it's stale** — a self-hosted app can't update itself, but Patzer checks GitHub every six hours and shows a one-line notice when a newer release is out, so you know to pull. Sends nothing about you; switch it off in *Admin → System*.

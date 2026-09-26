@@ -32,6 +32,7 @@ const SECOND_PERSON_PERSPECTIVE: Record<Language, string> = {
   bg: "ти",
   es: "tú",
   de: "du",
+  ru: "ты",
 };
 /** FACTS payload for /api/coach/explain. */
 export function factsForExplain(
@@ -182,6 +183,14 @@ export function explainMovePrompt(
       : `Sprich den Spieler mit "${input.player === "White" ? "Weiß" : "Schwarz"}" an.`;
     return `FACTS:\n${factsJson}\n\nTASK: Erkläre den Zug. ${address} Verwende FACTS.evaluation_state ODER FACTS.material_balance, wenn du die Stellung beschreibst — das ist dein Anker. Erwähne KEINE Figur und kein Feld außerhalb von FACTS.your_pieces und FACTS.opponent_pieces. Keine Schachnotation. Kein JSON. Nur natürliche Sprache, auf Deutsch.`;
   }
+  if (language === "ru") {
+    const persp = input.user_perspective
+      ? "ты"
+      : input.player === "White"
+        ? "Белые"
+        : "Чёрные";
+    return `FACTS:\n${factsJson}\n\nTASK: Объясни ход. Обращайся к игроку как "${persp}", без глаголов прошедшего времени с родом. Используй FACTS.evaluation_state ИЛИ FACTS.material_balance, когда описываешь позицию — это твой якорь. НЕ упоминай фигуры и поля вне FACTS.your_pieces и FACTS.opponent_pieces. Без шахматной нотации. Без JSON. Только естественный язык, по-русски.`;
+  }
 
   const persp = input.user_perspective ? "you" : input.player;
   return `FACTS:\n${factsJson}\n\nTASK: Explain the move. Address the player as "${persp}". Use FACTS.evaluation_state OR FACTS.material_balance when describing the position — that's your anchor. Do NOT mention any piece or square outside FACTS.your_pieces and FACTS.opponent_pieces. No chess notation. No JSON. Natural language only, in English.`;
@@ -217,6 +226,9 @@ export function hintPrompt(
   }
   if (language === "de") {
     return `FACTS:\n${factsJson}\n\nTASK: Gib einen konzeptionellen Tipp zur Stellung — nenne KEINEN konkreten Zug, keine Figur und keine Fortsetzung. Zeig, wohin man schauen sollte. Keine Schachnotation. 1-2 Sätze auf Deutsch.`;
+  }
+  if (language === "ru") {
+    return `FACTS:\n${factsJson}\n\nTASK: Дай концептуальную подсказку по позиции — НЕ называй конкретный ход, фигуру или продолжение. Покажи, куда смотреть. Без шахматной нотации. 1-2 предложения по-русски.`;
   }
   return `FACTS:\n${factsJson}\n\nTASK: Give a conceptual hint about the position — do NOT name a specific move, piece, or continuation. Point at the right idea. No chess notation. 1-2 sentences in English.`;
 } // ─────────────────────────────────────────────────────────────────────────────
