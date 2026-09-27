@@ -4,36 +4,23 @@ All notable changes to this project are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [7.16.0] — 2026-09-27
 
-### Security
-- **The GitHub star count no longer sends the page address to GitHub.** The
-  star badge also shows on the sign-up and password-reset pages, whose URLs
-  carry an invite code or a reset token; the request to api.github.com now
-  goes out without a Referer. On top of that the server now sends
-  `Referrer-Policy: strict-origin-when-cross-origin` instead of
-  `no-referrer-when-downgrade`, so no link or request to another site
-  carries a page's path and query any more.
-### Fixed
-- **Lichess import: one broken game no longer fails the whole import.** A
-  line of the export that is not a whole game is skipped instead of answering
-  500, and an account that already has an import waiting gets "an import is
-  already running" instead of queueing more requests behind it.
-### Fixed
-- **Connecting the AI coach from Docker.** The setup wizard rejected
-  `http://host.docker.internal:11434` — the very address the README
-  recommends — as `invalid_url`, and a failed test only said "unreachable" or
-  "fetch failed". Now that address is accepted, and a failed test in the setup
-  wizard and *Admin → System* explains the usual cause: inside Docker
-  `localhost` is the container itself, and Ollama has to listen on the network
-  (`OLLAMA_HOST=0.0.0.0`). `docker-compose.yml` has an opt-in (commented-out)
-  line that maps `host.docker.internal` on Linux too, and the README
-  troubleshooting entry spells out both steps. (#37)
-### Fixed
-- **German admin texts for DeepSeek and the hosted engine.** The DeepSeek
-  fields and the chess-api.com note in *Admin → System* were hard-coded in
-  English; they now come from the locale files, with German translations,
-  and the German coach description mentions DeepSeek like the English one.
+### A Learn section, Russian, and a round of fixes
+
+Patzer can now teach chess, not just review it: **54 interactive lessons** from
+"how the knight moves" to rook endgames, in English and German. It also speaks
+**Russian** now, its fifth language. Thank you to
+**[@eric-gpu](https://github.com/eric-gpu)** (Learn, opening-trainer follow-ups,
+Docker coach setup, two security and hardening fixes — #46–#51, #53, #54) and to
+our newest contributor **[@Fristail27](https://github.com/Fristail27)** (Russian —
+#52).
+
+Both the Learn section and the opening trainer are marked **beta**: they work,
+but their texts are still being refined. That is also why Russian shows the
+trainer and Learn screens in English for now; they get translated once the
+wording settles.
+
 ### Added
 - **Learn section (beta).** A new *Learn* page with 54 interactive lessons in four
   levels — New to chess, Beginner, Intermediate, Advanced: how the pieces
@@ -54,11 +41,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   tasks solvable in the stated number of moves) and by
   `npm run verify:lessons`, which asks Stockfish whether each answer really is
   the one clearly best move. Lesson texts in English and German. Marked beta
-  while it is being refined. (Roadmap #7)
+  while it is being refined. (Roadmap #7; #49, #50, #51)
+- **Russian (`ru`).** UI, setup wizard, coach persona and prompts, move
+  narration and Game Review prose, with all four Russian plural forms (one /
+  few / many / other). A key-parity test keeps `ru.json` complete; the
+  beta trainer and Learn texts (plus a few strings from this same release) are
+  listed as pending and fall back to English until they're translated.
+  (#20, #52)
 
 ### Changed
 - **Opening trainer is marked beta.** It works, but it is still being
-  refined, so the *Trainer* tab carries a small "Beta" badge.
+  refined, so the *Trainer* tab carries a small "Beta" badge. (#48)
 - **Opening trainer: easier first steps, fairer misses.** A new line starts
   with "Do you know this line already?": watch it first (arrows on every
   move, nothing counted) or practise right away. One wrong try no longer
@@ -68,7 +61,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   at your own midnight instead of UTC's, and a move you no longer play can be
   removed from it. Built-in line names are translated. In the review, a
   first wrong try gets a hint and one more go; after the answer it moves on
-  by itself.
+  by itself. (#48)
+
+### Fixed
+- **Connecting the AI coach from Docker.** The setup wizard rejected
+  `http://host.docker.internal:11434` — the very address the README
+  recommends — as `invalid_url`, and a failed test only said "unreachable" or
+  "fetch failed". Now that address is accepted, and a failed test in the setup
+  wizard and *Admin → System* explains the usual cause: inside Docker
+  `localhost` is the container itself, and Ollama has to listen on the network
+  (`OLLAMA_HOST=0.0.0.0`). `docker-compose.yml` has an opt-in (commented-out)
+  line that maps `host.docker.internal` on Linux too, and the README
+  troubleshooting entry spells out both steps. (#37, #53)
+- **German admin texts for DeepSeek and the hosted engine.** The DeepSeek
+  fields and the chess-api.com note in *Admin → System* were hard-coded in
+  English; they now come from the locale files, with German translations,
+  and the German coach description mentions DeepSeek like the English one. (#54)
+- **Lichess import: one broken game no longer fails the whole import.** A
+  line of the export that is not a whole game is skipped instead of answering
+  500, and an account that already has an import waiting gets "an import is
+  already running" instead of queueing more requests behind it. (#47)
+
+### Security
+- **The GitHub star count no longer sends the page address to GitHub.** The
+  star badge also shows on the sign-up and password-reset pages, whose URLs
+  carry an invite code or a reset token; the request to api.github.com now
+  goes out without a Referer. On top of that the server now sends
+  `Referrer-Policy: strict-origin-when-cross-origin` instead of
+  `no-referrer-when-downgrade`, so no link or request to another site
+  carries a page's path and query any more. (#46)
 
 ## [7.15.0] — 2026-09-26
 
