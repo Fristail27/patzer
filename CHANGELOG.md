@@ -34,6 +34,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   fields and the chess-api.com note in *Admin → System* were hard-coded in
   English; they now come from the locale files, with German translations,
   and the German coach description mentions DeepSeek like the English one.
+### Changed
+- **Opening trainer is marked beta.** It works, but it is still being
+  refined, so the *Trainer* tab carries a small "Beta" badge.
+- **Opening trainer: easier first steps, fairer misses.** A new line starts
+  with "Do you know this line already?": watch it first (arrows on every
+  move, nothing counted) or practise right away. One wrong try no longer
+  lands in the review — the second one (or "Show me the move") does. "Practice
+  this line" from your repertoire stops before one of your own moves that the
+  analysis calls a mistake in most of your games. The review queue turns over
+  at your own midnight instead of UTC's, and a move you no longer play can be
+  removed from it. Built-in line names are translated. In the review, a
+  first wrong try gets a hint and one more go; after the answer it moves on
+  by itself.
 
 ## [7.15.0] — 2026-09-26
 
