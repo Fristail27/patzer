@@ -14,6 +14,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `Referrer-Policy: strict-origin-when-cross-origin` instead of
   `no-referrer-when-downgrade`, so no link or request to another site
   carries a page's path and query any more.
+### Fixed
+- **Lichess import: one broken game no longer fails the whole import.** A
+  line of the export that is not a whole game is skipped instead of answering
+  500, and an account that already has an import waiting gets "an import is
+  already running" instead of queueing more requests behind it.
 
 ## [7.15.0] — 2026-09-26
 
