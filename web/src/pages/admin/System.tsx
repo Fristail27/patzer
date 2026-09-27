@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { CheckCircle2, AlertCircle, Save, Sparkles, Cpu, Loader2, FlaskConical, Mail, UserPlus, Send } from 'lucide-react';
 import { api } from '../../api';
 
@@ -163,9 +163,9 @@ export default function AdminSystem() {
   // DeepSeek's URL is optional — empty means the official https://api.deepseek.com.
   const activeUrlForTest = provider === 'deepseek' ? (activeUrl || 'https://api.deepseek.com') : activeUrl;
   const providerLabel = (p: string) => (p === 'ollama' ? 'Ollama' : p === 'vllm' ? 'vLLM' : 'DeepSeek');
-  const urlLabel = provider === 'vllm' ? t('admin.vllmUrl') : provider === 'deepseek' ? 'DeepSeek URL (optional)' : t('admin.ollamaUrl');
+  const urlLabel = provider === 'vllm' ? t('admin.vllmUrl') : provider === 'deepseek' ? t('admin.deepseekUrl') : t('admin.ollamaUrl');
   const urlPlaceholder = provider === 'vllm' ? 'http://localhost:8000' : provider === 'deepseek' ? 'https://api.deepseek.com' : 'http://localhost:11434';
-  const modelLabel = provider === 'vllm' ? t('admin.vllmModel') : provider === 'deepseek' ? 'DeepSeek model' : t('admin.ollamaModel');
+  const modelLabel = provider === 'vllm' ? t('admin.vllmModel') : provider === 'deepseek' ? t('admin.deepseekModel') : t('admin.ollamaModel');
   const modelPlaceholder = provider === 'vllm' ? 'Qwen3.8-27B' : provider === 'deepseek' ? 'deepseek-chat' : 'gemma3:27b';
   function setActiveUrl(v: string) {
     setS((cur) => provider === 'vllm' ? { ...cur, vllm_url: v } : provider === 'deepseek' ? { ...cur, deepseek_url: v } : { ...cur, ollama_url: v });
@@ -290,15 +290,15 @@ export default function AdminSystem() {
           </div>
           {provider === 'deepseek' && (
             <div>
-              <label className="label mb-1 block">DeepSeek API key</label>
+              <label className="label mb-1 block">{t('admin.deepseekKey')}</label>
               <input className="input" type="password" autoComplete="new-password" value={deepseekKey}
                 onChange={(e) => setDeepseekKey(e.target.value)} placeholder={deepseekKeySet ? '••••••••' : 'sk-…'} />
               {deepseekEnvOverride ? (
-                <p className="mt-1 flex items-center gap-1 text-xs text-amber-600 dark:text-amber-400"><AlertCircle className="h-3.5 w-3.5" /> Supplied by the DEEPSEEK_API_KEY environment variable — this field is ignored.</p>
+                <p className="mt-1 flex items-center gap-1 text-xs text-amber-600 dark:text-amber-400"><AlertCircle className="h-3.5 w-3.5" /> {t('admin.deepseekKeyEnv')}</p>
               ) : deepseekKeySet && !deepseekKey ? (
-                <p className="mt-1 text-xs text-ink-400">A key is saved. Type a new one to replace it, or leave blank to keep it.</p>
+                <p className="mt-1 text-xs text-ink-400">{t('admin.deepseekKeySaved')}</p>
               ) : (
-                <p className="mt-1 text-xs text-ink-400">Saved in this server's settings. Save before clicking Test.</p>
+                <p className="mt-1 text-xs text-ink-400">{t('admin.deepseekKeyHint')}</p>
               )}
             </div>
           )}
@@ -386,7 +386,7 @@ export default function AdminSystem() {
         </div>
         <div className="space-y-4 p-5">
           <p className="text-xs text-ink-400">
-            Game Review runs on the bundled local Stockfish by default. To use the hosted chess-api.com engine instead, set <code className="font-mono">ENGINE_BACKEND=chessapi</code> (env) or the <code className="font-mono">engine_backend</code> setting — e.g. for a public try-it instance (DEMO_MODE, #27).
+            <Trans i18nKey="admin.engineBackendNote" components={{ code: <code className="font-mono" /> }} />
           </p>
           <div>
             <label className="label mb-1 block">{t('admin.stockfishPath')}</label>

@@ -489,7 +489,7 @@
     "sendTestEmailHint": "Zuerst speichern — der Test verwendet die gespeicherten Einstellungen.",
     "send": "Senden",
     "testEmailSent": "Test-E-Mail wurde gesendet.",
-    "llmDesc": "Lokales Sprachmodell für den KI-Coach — Ollama oder ein OpenAI-kompatibler vLLM-Server. Beide werden getrennt eingerichtet, ein Wechsel des Anbieters verliert also keine Einstellungen.",
+    "llmDesc": "Sprachmodell für den KI-Coach — ein lokaler Ollama- oder OpenAI-kompatibler vLLM-Server oder die gehostete DeepSeek-API. Jeder Anbieter wird getrennt eingerichtet, ein Wechsel verliert also keine Einstellungen.",
     "vllmUrl": "vLLM-URL",
     "vllmModel": "vLLM-Modell",
     "testAllModels": "ALLE Modelle testen",
@@ -513,7 +513,14 @@
     "modelsFound_one": "{{count}} Modell gefunden",
     "modelsFound_other": "{{count}} Modelle gefunden",
     "connectionFailed": "Verbindung fehlgeschlagen",
-    "failed": "fehlgeschlagen"
+    "failed": "fehlgeschlagen",
+    "deepseekUrl": "DeepSeek-URL (optional)",
+    "deepseekModel": "DeepSeek-Modell",
+    "deepseekKey": "DeepSeek-API-Schlüssel",
+    "deepseekKeyEnv": "Kommt aus der Umgebungsvariable DEEPSEEK_API_KEY — dieses Feld wird ignoriert.",
+    "deepseekKeySaved": "Ein Schlüssel ist gespeichert. Gib einen neuen ein, um ihn zu ersetzen, oder lass das Feld leer, um ihn zu behalten.",
+    "deepseekKeyHint": "Wird in den Einstellungen dieses Servers gespeichert. Vor „Testen“ zuerst speichern.",
+    "engineBackendNote": "Die Partieanalyse nutzt standardmäßig das mitgelieferte lokale Stockfish. Für die gehostete Engine von chess-api.com setze stattdessen <code>ENGINE_BACKEND=chessapi</code> (Umgebungsvariable) oder die Einstellung <code>engine_backend</code> — z. B. für eine öffentliche Test-Instanz (DEMO_MODE, #27)."
   },
   "palette": {
     "switchLanguage": "Wechseln zu",

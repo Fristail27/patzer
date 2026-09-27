@@ -29,6 +29,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (`OLLAMA_HOST=0.0.0.0`). `docker-compose.yml` has an opt-in (commented-out)
   line that maps `host.docker.internal` on Linux too, and the README
   troubleshooting entry spells out both steps. (#37)
+### Fixed
+- **German admin texts for DeepSeek and the hosted engine.** The DeepSeek
+  fields and the chess-api.com note in *Admin → System* were hard-coded in
+  English; they now come from the locale files, with German translations,
+  and the German coach description mentions DeepSeek like the English one.
 
 ## [7.15.0] — 2026-09-26
 
