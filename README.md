@@ -35,7 +35,7 @@
 ## Why Patzer
 
 - **Your games stay home.** Single Docker container on a Pi / NAS / old laptop. No cloud, no telemetry, no upsell.
-- **Bring your own LLM.** The AI coach runs against your own [Ollama](https://ollama.com) or [vLLM](https://docs.vllm.ai) host. The coach is render-only — chess facts are computed server-side by Stockfish + chess.js, so a small local model can't hallucinate moves or pieces.
+- **Bring your own LLM.** The AI coach runs against your own [Ollama](https://ollama.com) or [vLLM](https://docs.vllm.ai) host. The coach teaches, but never analyses: Stockfish, chess.js and your own game history work out the facts server-side, so a small local model can't hallucinate moves or pieces.
 - **Made for a household, not a stadium.** Multi-user with admin console, per-profile language, kid-mode blunder warnings, "horsey" piece names for the youngest profiles.
 
 ## What it is
@@ -46,7 +46,7 @@ Patzer is a tiny, self-hosted take on the Chess.com / Lichess workflow you actua
 - **Play vs Bot** — full games against Stockfish at seven named tiers (Kid → Stockfish max), all standard time controls, a queue of up to six premoves shown on the board, kid-mode blunder warnings.
 - **Play vs Friend** — real-time PvP between profiles on the same server over WebSocket, with draw offers, takebacks and one-click rematch. Playing across the internet is a tunnel away — see the [FAQ](docs/FAQ.md#can-i-play-a-friend-who-lives-somewhere-else).
 - **Players & profiles** — a directory of everyone on your server with a rating leaderboard, live presence and public profiles (record, per-time-class ratings, your head-to-head), challenge-from-profile, and a "missed invitations" rail.
-- **AI Coach (your LLM)** — point at any [Ollama](https://ollama.com) or [vLLM](https://docs.vllm.ai) host (or, if you have no GPU to spare, the hosted DeepSeek API). Audience-tuned voices for Kid / Beginner / Intermediate / Advanced. Anti-hallucination by design — chess facts are computed server-side; the LLM only renders them.
+- **AI Coach (your LLM)** — point at any [Ollama](https://ollama.com) or [vLLM](https://docs.vllm.ai) host (or, if you have no GPU to spare, the hosted DeepSeek API). A coach, not a commentator: it explains *why* a move works or fails (what it allows, hangs or wins, and the opponent's best answer), shows the better move and other good ones with what they achieve, connects the mistake to your own recent games ("4 of your last 10 games: leaving a piece unprotected", your weakest phase, positions you missed in the opening trainer) and links a matching Learn lesson. Hints point you at what matters without giving the move away. It never contradicts the engine: an answer that praises a mistake is caught before you see it. Audience-tuned for Kid / Beginner / Intermediate / Advanced.
 - **Family-ready** — multi-user with admin console, open / invite-only / closed sign-up, per-profile language, kid-mode blunder warnings, "horsey" piece names for the youngest profiles.
 - **Learn (beta)** — 54 interactive lessons in four levels, from how the pieces move to tactics, mating patterns and rook endgames. Stars and progress per profile; kid mode tells the same lessons in simpler words.
 - **Opening trainer (beta)** — drill 16 built-in main lines or any line from your own repertoire; the moves you miss come back in a daily review queue.
@@ -167,7 +167,7 @@ If you're terminating TLS at a reverse proxy, set `COOKIE_SECURE=true` in the co
   </picture>
 </p>
 
-The coach is render-only: every prompt is built from a pre-computed fact list (piece inventory, captured pieces, recent moves in plain English, in-check flag, engine PV) and the LLM is forbidden from inventing moves or pieces. See [server/src/coach/prompts.ts](server/src/coach/prompts.ts) and the [CHANGELOG 2.1.0 entry](CHANGELOG.md) for the why. Because the model only phrases what it is handed, `gemma3:1b` on a CPU is enough for a readable coach.
+The coach teaches from facts it is handed and never analyses on its own: the server works out what a move allows, hangs, wins or stops (chess.js, [server/src/coach/tactics.ts](server/src/coach/tactics.ts)), the opponent's best answer and the alternatives (Stockfish), and the player's recurring mistakes ([server/src/coach/memory.ts](server/src/coach/memory.ts)), and the LLM turns that into coaching ([server/src/coach/coaching.ts](server/src/coach/coaching.ts)). Every answer is checked against the engine's verdict before it is shown. Because the model only explains what it is handed, a small local model is enough for a useful coach.
 
 ## Local development
 

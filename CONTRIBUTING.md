@@ -48,7 +48,7 @@ web/              React + Vite + Tailwind
 
 Two key invariants:
 
-1. **Coach is render-only.** The LLM never analyzes — `server/src/coach/prompts.ts` pre-computes facts (piece inventory, threats, recent moves, captured pieces, in-check flag) and hands them to the model as plain English. If you find yourself asking the LLM to "figure out X", figure it out server-side first.
+1. **The coach teaches, the server analyses.** The LLM never works anything out — `server/src/coach/coaching.ts` pre-computes the facts (why a move is good or bad from `tactics.ts`, the opponent's answer and the alternatives from Stockfish, the player's history from `memory.ts`) and hands them to the model as plain language, and `contradiction()` checks every answer against the engine's verdict. If you find yourself asking the LLM to "figure out X", figure it out server-side first.
 2. **No user-facing config in env vars.** Anything a user might want to change at runtime lives in the SQLite DB (Admin → System or Settings). Env vars are operational only (`PORT`, `DB_PATH`, `STOCKFISH_PATH`, `SESSION_SECRET`).
 
 ## Before opening a PR
