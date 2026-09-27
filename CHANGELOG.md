@@ -19,6 +19,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   line of the export that is not a whole game is skipped instead of answering
   500, and an account that already has an import waiting gets "an import is
   already running" instead of queueing more requests behind it.
+### Fixed
+- **Connecting the AI coach from Docker.** The setup wizard rejected
+  `http://host.docker.internal:11434` — the very address the README
+  recommends — as `invalid_url`, and a failed test only said "unreachable" or
+  "fetch failed". Now that address is accepted, and a failed test in the setup
+  wizard and *Admin → System* explains the usual cause: inside Docker
+  `localhost` is the container itself, and Ollama has to listen on the network
+  (`OLLAMA_HOST=0.0.0.0`). `docker-compose.yml` has an opt-in (commented-out)
+  line that maps `host.docker.internal` on Linux too, and the README
+  troubleshooting entry spells out both steps. (#37)
 
 ## [7.15.0] — 2026-09-26
 

@@ -56,7 +56,7 @@ export default function AdminSystem() {
   const [runtime, setRuntime] = useState<{ last_model_used: string | null; last_error: string | null; p95_ms: number | null; call_count: number } | null>(null);
   const [models, setModels] = useState<string[]>([]);
   const [loadingModels, setLoadingModels] = useState(false);
-  const [ollamaStatus, setOllamaStatus] = useState<{ ok: boolean; msg: string } | null>(null);
+  const [ollamaStatus, setOllamaStatus] = useState<{ ok: boolean; msg: string; hint?: string } | null>(null);
   const [stockfishStatus, setStockfishStatus] = useState<{ ok: boolean; msg: string } | null>(null);
   const [saved, setSaved] = useState(false);
   const [hydrated, setHydrated] = useState(false);
@@ -190,7 +190,7 @@ export default function AdminSystem() {
     setLoadingModels(true);
     if (!silent) setOllamaStatus(null);
     try {
-      const r = await api.post<{ ok: boolean; models?: { name: string }[]; error?: string }>('/api/admin/test/ollama', { url, provider });
+      const r = await api.post<{ ok: boolean; models?: { name: string }[]; error?: string; hint?: string }>('/api/admin/test/ollama', { url, provider });
       if (r.ok) {
         const ns = (r.models ?? []).map((m) => m.name).sort();
         setModels(ns);
@@ -198,7 +198,7 @@ export default function AdminSystem() {
         if (!activeModel && ns[0]) setActiveModel(ns[0]!);
       } else {
         setModels([]);
-        setOllamaStatus({ ok: false, msg: r.error ?? t('admin.connectionFailed') });
+        setOllamaStatus({ ok: false, msg: r.error ?? t('admin.connectionFailed'), hint: r.hint });
       }
     } catch (e) {
       setModels([]);
@@ -286,6 +286,7 @@ export default function AdminSystem() {
                 {ollamaStatus.msg}
               </div>
             )}
+            {ollamaStatus?.hint && <p className="mt-1 text-xs text-ink-500">{t(`setup.llmHint.${ollamaStatus.hint}`)}</p>}
           </div>
           {provider === 'deepseek' && (
             <div>

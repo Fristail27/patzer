@@ -6,6 +6,7 @@ import { config } from '../config.js';
 import { hashPassword } from '../auth/passwords.js';
 import { createSession, SESSION_COOKIE_NAME, SESSION_MAX_AGE_SECONDS } from '../auth/sessions.js';
 import { testConnection } from '../coach/llm.js';
+import { connectionHint } from '../coach/connectionHint.js';
 
 const router = new Hono();
 
@@ -18,13 +19,15 @@ router.get('/status', (c) => {
 // names. Without this, a freshly-deployed instance lets an attacker probe
 // http://169.254.169.254/ (cloud metadata), http://10.0.0.5:8080/, etc.
 // Public-Internet Ollama hosting is not a thing we want to enable here.
-function isPrivateOllamaUrl(raw: string): boolean {
+// `host.docker.internal` is Docker's name for the machine the container runs
+// on — a private address by definition, and the URL the README recommends.
+export function isPrivateOllamaUrl(raw: string): boolean {
   let u: URL;
   try { u = new URL(raw); } catch { return false; }
   if (u.protocol !== 'http:' && u.protocol !== 'https:') return false;
   const host = u.hostname.toLowerCase();
   if (!host) return false;
-  if (host === 'localhost' || host.endsWith('.local')) return true;
+  if (host === 'localhost' || host.endsWith('.local') || host === 'host.docker.internal') return true;
   // IPv4 ranges: 10/8, 172.16/12, 192.168/16, 127/8.  Reject 169.254/16 (link-local
   // metadata services) and 0.0.0.0.
   const m = host.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
@@ -56,7 +59,7 @@ router.post('/test-ollama', async (c) => {
   if (!isPrivateOllamaUrl(url)) return c.json({ ok: false, error: 'invalid_url' });
   const result = await testConnection(url, 'ollama');
   if (result.ok) return c.json({ ok: true, models: result.models });
-  return c.json({ ok: false, error: 'unreachable' });
+  return c.json({ ok: false, error: 'unreachable', hint: connectionHint(url, result.error) });
 });
 
 const setupSchema = z.object({

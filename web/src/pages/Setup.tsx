@@ -23,11 +23,12 @@ export default function Setup() {
   const [models, setModels] = useState<string[]>([]);
   const [testStatus, setTestStatus] = useState<'idle' | 'testing' | 'ok' | 'fail'>('idle');
   const [testError, setTestError] = useState('');
+  const [testHint, setTestHint] = useState<string | undefined>();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
 
   async function testOllama() {
-    setTestStatus('testing'); setTestError(''); setModels([]);
+    setTestStatus('testing'); setTestError(''); setTestHint(undefined); setModels([]);
     try {
       const res = await fetch('/api/setup/test-ollama', {
         method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'patzer' },
@@ -40,7 +41,7 @@ export default function Setup() {
         if (names.length && !ollamaModel) setOllamaModel(names[0]);
         setTestStatus('ok');
       } else {
-        setTestStatus('fail'); setTestError(data.error ?? 'unknown');
+        setTestStatus('fail'); setTestError(data.error ?? 'unknown'); setTestHint(data.hint);
       }
     } catch (err) {
       setTestStatus('fail'); setTestError((err as Error).message);
@@ -142,6 +143,7 @@ export default function Setup() {
                 {testStatus === 'fail' && (
                   <div className="rounded-lg border border-bad/30 bg-bad/10 px-3 py-2 text-sm text-bad">
                     <AlertCircle className="mr-1 inline h-4 w-4" /> {t('setup.ollamaFailed', { error: testError })}
+                    {testHint && <p className="mt-1 text-xs text-ink-600 dark:text-ink-300">{t(`setup.llmHint.${testHint}`)}</p>}
                   </div>
                 )}
                 {models.length > 0 && (

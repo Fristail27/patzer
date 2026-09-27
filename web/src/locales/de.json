@@ -50,7 +50,11 @@
     "finish": "Einrichtung abschließen",
     "creating": "Wird erstellt…",
     "passwordHint": "Mindestens 10 Zeichen.",
-    "next": "Weiter"
+    "next": "Weiter",
+    "llmHint": {
+      "docker_localhost": "Patzer läuft in Docker – dort ist „localhost“ der Container selbst, nicht dein Computer. Nimm http://host.docker.internal:11434 (bei Docker Desktop unter Windows und Mac eingebaut; unter Linux erst nach Einschalten der extra_hosts-Zeilen in docker-compose.yml) oder die Netzwerkadresse deines Computers, z. B. http://192.168.1.20:11434. Außerdem muss der KI-Server Verbindungen aus dem Netzwerk annehmen – bei Ollama: OLLAMA_HOST=0.0.0.0 setzen und Ollama neu starten.",
+      "unreachable": "Unter dieser Adresse hat niemand geantwortet. Prüfe, ob der KI-Server läuft, ob Adresse und Port stimmen und ob er Verbindungen aus dem Netzwerk annimmt (bei Ollama: OLLAMA_HOST=0.0.0.0 setzen, dann neu starten). Auch eine Firewall auf diesem Computer kann den Port blockieren."
+    }
   },
   "login": {
     "title": "Willkommen zurück",

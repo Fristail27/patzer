@@ -4,6 +4,7 @@ import { db, getSetting, setSetting } from '../db.js';
 import { updateCheckEnabled, setUpdateCheckEnabled } from '../updates.js';
 import { requireAdmin } from '../auth/middleware.js';
 import { hashPassword } from '../auth/passwords.js';
+import { connectionHint } from '../coach/connectionHint.js';
 import { testConnection, testModel, llmUrl, llmStats, llmProvider, deepseekApiKey, type LlmProvider } from '../coach/llm.js';
 import { StockfishEngine } from '../chess/stockfish.js';
 import { isMailerConfigured, sendMail, verifyConnection, welcomeTemplate } from '../email/mailer.js';
@@ -366,7 +367,11 @@ router.post('/test/ollama', async (c) => {
     ? body.url
     : llmUrl();
   if (!url) return c.json({ ok: false, error: 'no_url_configured' });
-  return c.json(await testConnection(url, bodyProvider(body)));
+  const provider = bodyProvider(body);
+  const result = await testConnection(url, provider);
+  // The hint's how-to (port 11434, OLLAMA_HOST) is Ollama's.
+  if (result.ok || provider !== 'ollama') return c.json(result);
+  return c.json({ ...result, hint: connectionHint(url, result.error) });
 });
 
 router.post('/test/ollama-models', async (c) => {

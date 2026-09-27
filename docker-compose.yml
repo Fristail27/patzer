@@ -9,6 +9,12 @@ services:
     restart: unless-stopped
     ports:
       - "${HOST_PORT:-8800}:8800"
+    # Linux + Ollama on this same machine: uncomment these two lines to reach
+    # it as http://host.docker.internal:11434 (Docker Desktop on Windows/Mac
+    # has that name built in). Needs Docker 20.10+, and Ollama must listen on
+    # the network (OLLAMA_HOST=0.0.0.0). Your LAN IP works without this too.
+    # extra_hosts:
+    #   - "host.docker.internal:host-gateway"
     volumes:
       - patzer-data:/app/data
     environment:

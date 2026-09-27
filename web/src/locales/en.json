@@ -50,7 +50,11 @@
     "finish": "Finish setup",
     "creating": "Creating…",
     "passwordHint": "At least 10 characters.",
-    "next": "Next"
+    "next": "Next",
+    "llmHint": {
+      "docker_localhost": "Patzer runs in Docker, where \"localhost\" is the container itself, not your computer. Use http://host.docker.internal:11434 (built into Docker Desktop on Windows and Mac; on Linux only after enabling the extra_hosts lines in docker-compose.yml) or your computer's network address, e.g. http://192.168.1.20:11434. The AI server must also accept connections from the network — for Ollama, set OLLAMA_HOST=0.0.0.0 and restart Ollama.",
+      "unreachable": "Nothing answered at this address. Check that the AI server is running, that address and port are right, and that it accepts connections from the network (for Ollama: set OLLAMA_HOST=0.0.0.0, then restart it). A firewall on that computer can also block the port."
+    }
   },
   "login": {
     "title": "Welcome back",
