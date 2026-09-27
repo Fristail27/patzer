@@ -15,6 +15,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { rmSync } from 'node:fs';
 import { chromium, type Page, type BrowserContext } from 'playwright';
+import { Chess } from 'chess.js';
 
 const PORT = 8895;
 const BASE = `http://127.0.0.1:${PORT}`;
@@ -67,6 +68,20 @@ async function login(ctx: BrowserContext, username: string, password: string): P
 /** How many moves the move list is showing. */
 async function moveCount(page: Page): Promise<number> {
   return page.evaluate(() => document.querySelectorAll('[data-ply]').length);
+}
+/** A legal move for alice in her saved bot game: `prefer` (e.g. "g1f3") when
+ *  it's legal, otherwise the first legal move. The bot's replies are random,
+ *  so a fixed move is sometimes illegal — after 2…Bb4+ white is in check and
+ *  Nf3 can't be played (that turned main red after v7.17.0). */
+async function legalMove(prefer: string): Promise<[string, string]> {
+  const { db } = await import('../../src/db.js');
+  const { loadLiveBotGame } = await import('../../src/chess/liveBotGames.js');
+  const { id } = db.prepare("SELECT id FROM users WHERE username = 'alice'").get() as { id: number };
+  const game = new Chess();
+  game.loadPgn(loadLiveBotGame(id)?.pgn ?? '', { strict: false });
+  const legal = game.moves({ verbose: true });
+  const m = legal.find((x) => x.from + x.to === prefer) ?? legal[0]!;
+  return [m.from, m.to];
 }
 /** Close the live play socket from inside the page — what a sleeping phone does. */
 async function dropSocket(page: Page): Promise<number> {
@@ -140,7 +155,7 @@ ok(bannerGone, 'and reconnects by itself once the network is back');
 const afterReconnect = await moveCount(page);
 ok(afterReconnect >= beforeLeaving, `the game came back intact (${afterReconnect} moves)`);
 
-await move(page, 'g1', 'f3', 'white');
+{ const [from, to] = await legalMove('g1f3'); await move(page, from, to, 'white'); }
 await page.waitForTimeout(2000);
 const afterMove = await moveCount(page);
 ok(afterMove > afterReconnect, `and it is still playable after reconnecting (${afterMove} moves)`);
@@ -160,7 +175,7 @@ await page.waitForTimeout(3000);
 const afterResume = await moveCount(page);
 ok(afterResume >= afterMove, `resuming restores every move (${afterResume})`);
 
-await move(page, 'b1', 'c3', 'white');
+{ const [from, to] = await legalMove('b1c3'); await move(page, from, to, 'white'); }
 await page.waitForTimeout(2000);
 ok((await moveCount(page)) > afterResume, 'and the resumed game accepts moves');
 
