@@ -131,7 +131,10 @@ async function main() {
 
   console.log('bot game: resigning clears it');
   B.send('resign');
-  await B.wait('game_over');
+  const over = await B.wait('game_over');
+  // The game is saved before it is announced, so the id rides on game_over:
+  // a page that closes its socket on game_over can't miss it.
+  check(typeof over.game_id === 'number' && over.game_id > 0, `game_over carries the saved game's id (${over.game_id})`);
   await B.wait('game_saved');
   const live3 = await api('/api/games/live', undefined, alice);
   check(live3.json.bot === null, 'a finished game is no longer resumable');

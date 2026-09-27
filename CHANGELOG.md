@@ -4,6 +4,26 @@ All notable changes to this project are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [7.17.1] — 2026-09-27
+
+### Finished games no longer hang on "Saving game…"
+
+- **Fixed: after a game against the bot, the game-over card spun on "Saving
+  game…" forever.** The game *was* saved — it just couldn't be reached from
+  there. Since 7.14.0 the page closes the bot socket as soon as the game is
+  over, and the server announced the end (`game_over`) a few milliseconds
+  before confirming the save (`game_saved`), so the confirmation arrived on a
+  socket that was already closed. In a real browser that happened every
+  time. The server now saves first and puts the game's id on `game_over`
+  itself, and the page closes the socket only once it knows the id.
+- **Fixed:** `[classify-user-move] Error: engine not started` in the server
+  log at the end of a bot game — the analysis engine was shut down while the
+  last move was still being classified.
+
+Tests: a browser scenario that finishes five games in a row and opens each
+one's review (0/5 on 7.17.0, 5/5 now), and a protocol check that `game_over`
+carries the saved game's id.
+
 ## [7.17.0] — 2026-09-27
 
 ### The coach coaches

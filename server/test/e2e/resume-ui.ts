@@ -197,6 +197,33 @@ await page.waitForTimeout(1200);
 const stillThere = await page.getByText(/continue where you left off/i).first().isVisible().catch(() => false);
 ok(!stillThere, 'discarding removes the offer');
 
+// --- 5. a finished game is saved and reachable ---------------------------
+// Regression: the page closed the bot socket the moment `game_over` set a
+// result, so the `game_saved` that followed a few ms later was lost and the
+// game-over card spun on "Saving game…" forever — although the game was in
+// the database. Timing-dependent, so several games in a row.
+console.log('\nscenario 5: finish a game, get to its review');
+let reachable = 0;
+const ROUNDS = 5;
+for (let i = 0; i < ROUNDS; i++) {
+  await page.goto(`${BASE}/play`);
+  await page.waitForTimeout(1200);
+  await page.getByRole('button', { name: /start|play/i }).last().click();
+  await page.waitForTimeout(2000);
+  await move(page, 'e2', 'e4', 'white');
+  await page.waitForTimeout(1500);
+  await page.getByRole('button', { name: /^resign$/i }).first().click();
+  const review = page.getByRole('button', { name: /review this game/i }).first();
+  const shown = await review.waitFor({ state: 'visible', timeout: 6000 }).then(() => true).catch(() => false);
+  const spinning = await page.getByText(/saving game/i).first().isVisible().catch(() => false);
+  if (shown && !spinning) {
+    await review.click();
+    await page.waitForTimeout(1500);
+    if (/\/review\/\d+/.test(page.url())) reachable++;
+  }
+}
+ok(reachable === ROUNDS, `every finished game offers its review, never "Saving game…" forever (${reachable}/${ROUNDS})`);
+
 await browser.close();
 console.log(fails === 0 ? '\nAll resume-UI checks passed.' : `\n${fails} check(s) FAILED.`);
 process.exit(fails === 0 ? 0 : 1);
