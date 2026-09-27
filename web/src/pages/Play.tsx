@@ -227,12 +227,15 @@ export default function Play() {
       .catch(() => setCoachConfigured(false));
   }, []);
 
-  // Once a bot game is over there is nothing left to hold a socket open for —
-  // and the server has already deleted the snapshot, so a reconnect would only
-  // find nothing. A PvP socket stays up: rematch is negotiated over it.
+  // Once a bot game is over and saved there is nothing left to hold a socket
+  // open for — and the server has already deleted the snapshot, so a
+  // reconnect would only find nothing. Not before it's saved, though: closing
+  // on the result alone dropped the `game_saved` that used to follow
+  // `game_over`, and the card spun on "Saving game…" forever. A PvP socket
+  // stays up: rematch is negotiated over it.
   useEffect(() => {
     resultRef.current = result;
-    if (result && !pvpGameId) socketRef.current?.disconnect();
+    if (result?.gameId && !pvpGameId) socketRef.current?.disconnect();
   }, [result, pvpGameId]);
 
   // What can I walk back into? Asked on the setup screen, and again whenever we
@@ -563,7 +566,7 @@ export default function Play() {
         clearPremoves();
         setPhase('over');
         playSound('game_end');
-        if (msg.result) setResult({ result: msg.result, reason: msg.reason ?? '' });
+        if (msg.result) setResult({ result: msg.result, reason: msg.reason ?? '', gameId: msg.game_id });
         break;
       case 'game_saved':
         if (msg.game_id) setResult((r) => r ? { ...r, gameId: msg.game_id } : { result: '?', reason: '?', gameId: msg.game_id });

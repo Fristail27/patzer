@@ -597,7 +597,6 @@ async function endBotGame(ws: WebSocket, session: BotSession, result: '1-0' | '0
   session.saved = true;
   // The game is about to become a `games` row; there is nothing left to resume.
   clearLiveBotGame(session.user.id);
-  send(ws, 'game_over', { result, reason, fen: session.chess.fen() });
 
   const userId = session.user.id;
   const white = session.userColor === 'white' ? session.user.profile.display_name : `Stockfish (${session.difficulty})`;
@@ -629,10 +628,20 @@ async function endBotGame(ws: WebSocket, session: BotSession, result: '1-0' | '0
     tcClass,
   );
   const gameId = Number(r.lastInsertRowid);
+  // Saved first, announced second, with the id on the announcement: the page
+  // closes a bot socket as soon as the game is over, and a separate
+  // `game_saved` sent after `game_over` was regularly lost that way — the
+  // game-over card then spun on "Saving game…" forever. `game_saved` is kept
+  // for older clients.
+  send(ws, 'game_over', { result, reason, fen: session.chess.fen(), game_id: gameId });
   send(ws, 'game_saved', { game_id: gameId });
 
   session.engine.quit().catch(() => { /* ignore */ });
-  if (session.analysisEngine) session.analysisEngine.quit().catch(() => { /* ignore */ });
+  // Through the analysis queue: the last move's classification may still be
+  // running on this engine ("engine not started" in the log otherwise).
+  void runOnAnalysisEngine(session, async () => {
+    await session.analysisEngine?.quit().catch(() => { /* ignore */ });
+  });
   setImmediate(async () => {
     try {
       const analysis = await analyzePgn(pgn, 14);
