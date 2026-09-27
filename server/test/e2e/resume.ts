@@ -7,6 +7,7 @@
 // Stockfish). Run it with `npm run test:resume`.
 
 import WebSocket from 'ws';
+import { Chess } from 'chess.js';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -113,7 +114,14 @@ async function main() {
   check(resumed.turn === 'w', 'and it is our move again');
 
   console.log('bot game: it is still playable');
-  B.send('move', { uci: 'g1f3' });
+  // The kid bot's replies are random, so the position isn't fixed: after
+  // 1.e4 … 2.d4 Bb4+ white is in check and Nf3 is illegal. Play Nf3 when it
+  // is legal, otherwise the first legal move of the restored position.
+  const pos = new Chess();
+  for (const san of resumed.history ?? []) pos.move(san);
+  const legal = pos.moves({ verbose: true });
+  const next = legal.find((m) => m.from === 'g1' && m.to === 'f3') ?? legal[0]!;
+  B.send('move', { uci: next.from + next.to + (next.promotion ?? '') });
   const mine = await B.wait('move_made');
   check(mine.by === 'user', 'the resumed game accepts a move');
   await B.wait('move_made');
