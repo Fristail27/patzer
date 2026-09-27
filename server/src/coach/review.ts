@@ -138,6 +138,26 @@ Schema: { "title": string, "what_happened": string, "why_it_matters": string, "w
     fallbackSkill: (elo) => `Diese Partie entsprach etwa ${elo} Elo.`,
     fallbackOpening: (name) => `Du hast mit ${name} eröffnet — eine solide Wahl.`,
   },
+  ru: {
+    jsonHard: `\n\nR10. Ответь РОВНО ОДНИМ JSON-объектом по схеме из TASK. Без текста вне JSON. Без markdown-блоков. Без лишних ключей.`,
+    perspective: 'ты',
+    phase: { opening: 'дебют', middlegame: 'миттельшпиль', endgame: 'эндшпиль' },
+    keyMoment: 'Ключевой момент',
+    taskPhase: (phase) => `TASK: Опиши в 2-3 предложениях, как игрок провёл стадию «${phase}». Обращайся на "ты", без глаголов прошедшего времени с родом. Схема: { "prose": string }`,
+    taskMoment: `TASK: Опиши этот ключевой момент. Обращайся к игроку на "ты", без глаголов прошедшего времени с родом. Поля:
+- title: ≤6 слов, без точки в конце.
+- what_happened: 1 предложение — что сделал игрок и вердикт движка.
+- why_it_matters: 1 предложение — чего это стоило или какой принцип за этим стоит.
+- what_to_learn: 1 предложение — вывод.
+Схема: { "title": string, "what_happened": string, "why_it_matters": string, "what_to_learn": string }`,
+    taskSummary: `TASK: Подведи итог партии для игрока. Обращайся на "ты", без глаголов прошедшего времени с родом. Схема: { "summary": string (3-4 предложения), "skill_assessment": string (1 предложение об уровне игры), "opening_prose": string (≤2 предложения о дебюте) }`,
+    fallbackPhase: (phase, accuracy, plies) => `В стадии «${phase}» твоя точность — ${accuracy}% на ${plies} полуходах.`,
+    fallbackMoment: (ply, verdict, cpLoss) => `На полуходе ${ply} партия перевернулась. ${verdict}. Цена — около ${cpLoss} сантипешек.`,
+    fallbackSummary: (acc, brilliant, mistakes, blunders) => `Твоя точность — ${acc}%. Блестящих ходов: ${brilliant}, ошибок: ${mistakes}, зевков: ${blunders}.`,
+    fallbackSkillNone: 'Оценки уровня пока нет.',
+    fallbackSkill: (elo) => `Эта партия сыграна примерно на уровне ${elo} Эло.`,
+    fallbackOpening: (name) => `Дебют партии — ${name}: крепкий выбор.`,
+  },
 };
 
 function reviewText(language: Language): ReviewText {

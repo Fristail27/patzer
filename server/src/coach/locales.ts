@@ -54,6 +54,14 @@ const PIECE_NAME_DE: Record<string, string> = {
   N: "Springer",
   P: "Bauer",
 };
+const PIECE_NAME_RU: Record<string, string> = {
+  K: "король",
+  Q: "ферзь",
+  R: "ладья",
+  B: "слон",
+  N: "конь",
+  P: "пешка",
+};
 const PIECE_NAME_KID_EN: Record<string, string> = {
   K: "king",
   Q: "queen",
@@ -86,6 +94,42 @@ const PIECE_NAME_KID_DE: Record<string, string> = {
   N: "Pferdchen",
   P: "Bauer",
 };
+const PIECE_NAME_KID_RU: Record<string, string> = {
+  K: "король",
+  Q: "королева",
+  R: "ладья",
+  B: "слоник",
+  N: "лошадка",
+  P: "пешка",
+};
+
+// Russian piece names decline: the mover stays in the nominative ("конь бьёт"),
+// but the captured piece, a promotion target and a material edge take the
+// accusative ("бьёт пешку", "превращение в ферзя", "на ладью больше").
+const RU_FORMS: Record<string, { acc: string }> = {
+  король: { acc: "короля" },
+  ферзь: { acc: "ферзя" },
+  королева: { acc: "королеву" },
+  ладья: { acc: "ладью" },
+  слон: { acc: "слона" },
+  слоник: { acc: "слоника" },
+  конь: { acc: "коня" },
+  лошадка: { acc: "лошадку" },
+  пешка: { acc: "пешку" },
+};
+
+export function ruForm(name: string, form: "acc"): string {
+  return RU_FORMS[name]?.[form] ?? name;
+}
+
+/** Pick the Russian plural form for a count: 1 пешка, 2 пешки, 5 пешек. */
+export function ruPlural(n: number, one: string, few: string, many: string): string {
+  const mod10 = n % 10;
+  const mod100 = n % 100;
+  if (mod10 === 1 && mod100 !== 11) return one;
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return few;
+  return many;
+}
 
 // German piece names need an article and a grammatical case — "der Springer
 // zieht", but "schlägt den Bauern" and "du hast einen Turm mehr".
@@ -119,12 +163,14 @@ const PIECE_NAMES: Record<"kid" | "standard", Record<Language, Record<string, st
     bg: PIECE_NAME_KID_BG,
     es: PIECE_NAME_KID_ES,
     de: PIECE_NAME_KID_DE,
+    ru: PIECE_NAME_KID_RU,
   },
   standard: {
     en: PIECE_NAME_EN,
     bg: PIECE_NAME_BG,
     es: PIECE_NAME_ES,
     de: PIECE_NAME_DE,
+    ru: PIECE_NAME_RU,
   },
 };
 
@@ -281,12 +327,46 @@ const AUDIENCE_DE: Record<Audience, AudienceBlock> = {
     banned: "(auf dieser Stufe gibt es keine Verbotsliste — schreib auf Augenhöhe)",
   },
 };
+const AUDIENCE_RU: Record<Audience, AudienceBlock> = {
+  kid: {
+    tone: 'Тёплый, мягкий, ободряющий. Ошибки — это "ой", а не "ошибки". Фигуры — персонажи: конь — это лошадка, слон — слоник, ферзь — королева.',
+    sentences: "2 коротких предложения по 6-12 слов.",
+    allowed:
+      'простые слова; названия фигур; "смотрит", "следит", "в безопасности", "нападает", "защищает"',
+    banned:
+      "зевок, оценка, профилактика, форпост, темп, инициатива, связка, рентген, вскрытое нападение, слабое поле",
+  },
+  beginner: {
+    tone: "Дружелюбный, обучающий, от принципов. Называй ОДНО понятие на момент (безопасность короля, развитие, подсчёт нападающих и защитников).",
+    sentences: "3 коротких предложения по 10-18 слов.",
+    allowed:
+      "безопасность короля, развитие, центр, взятие, нападение, защита, угроза, ценность фигур",
+    banned:
+      "профилактика, форпост, атака меньшинства, ограничение, цугцванг, крепость, подрыв",
+  },
+  intermediate: {
+    tone: "Конкретный спортивный комментарий. Называй стандартные тактические и позиционные мотивы своими именами.",
+    sentences: "3-5 предложений по 14-22 слова.",
+    allowed:
+      "связка, вилка, рентген, вскрытое нападение, отвлечение, перегрузка, слабое поле, форпост, открытая линия, пешечная структура, безопасность короля, активность фигур, темп, инициатива",
+    banned:
+      "профилактика, атака меньшинства, цугцванг, крепость, ограничение, подрыв",
+  },
+  advanced: {
+    tone: "На равных, быстро, насыщенно мотивами. План и ключевые поля важнее основ.",
+    sentences: "3-6 предложений по 16-26 слов.",
+    allowed:
+      "профилактика, атака меньшинства, ограничение, подрыв, прорыв, крепость, цугцванг, оппозиция, треугольник, плюс вся лексика среднего уровня",
+    banned: "(на этом уровне запрещённого списка нет — пиши на равных)",
+  },
+};
 
 const AUDIENCE_DATA: Record<Language, Record<Audience, AudienceBlock>> = {
   en: AUDIENCE_EN,
   bg: AUDIENCE_BG,
   es: AUDIENCE_ES,
   de: AUDIENCE_DE,
+  ru: AUDIENCE_RU,
 };
 
 const AUDIENCE_LABELS: Record<
@@ -301,6 +381,8 @@ const AUDIENCE_LABELS: Record<
     `Audiencia: ${a}.\nTONO: ${b.tone}\nLONGITUD: ${b.sentences}\nCONCEPTOS PERMITIDOS: ${b.allowed}.\nCONCEPTOS PROHIBIDOS: ${b.banned}.`,
   de: (a, b) =>
     `Zielgruppe: ${a}.\nTON: ${b.tone}\nLÄNGE: ${b.sentences}\nERLAUBTE BEGRIFFE: ${b.allowed}.\nVERBOTENE BEGRIFFE: ${b.banned}.`,
+  ru: (a, b) =>
+    `Аудитория: ${a}.\nТОН: ${b.tone}\nДЛИНА: ${b.sentences}\nРАЗРЕШЁННЫЕ ПОНЯТИЯ: ${b.allowed}.\nЗАПРЕЩЁННЫЕ ПОНЯТИЯ: ${b.banned}.`,
 };
 
 function audienceBlock(audience: Audience, language: Language): string {
@@ -318,6 +400,11 @@ const PERSONA_ES = `=== PERSONA ===
 Eres el entrenador de ajedrez de Patzer. Tu voz es la del narrador del Análisis de Partida de Chess.com: cálida, amigable, con energía de comentario deportivo, nunca condescendiente y siempre concreta. Te diriges directamente al jugador de "tú".`;
 const PERSONA_DE = `=== PERSONA ===
 Du bist der Schachtrainer von Patzer. Deine Stimme ist die des Sprechers der Partieanalyse auf Chess.com: herzlich, freundlich, mit der Energie eines Sportkommentators, nie herablassend, immer konkret. Du duzt den Spieler ("du hast", "dein Springer"). Sprich ihn aber nie mit einer Anrede an: keine Begrüßung wie "Hallo du" und kein angehängtes ", du!" am Satzende.`;
+// Russian past-tense verbs carry gender ("ты сыграл" / "ты сыграла") and the
+// coach doesn't know the player's, so the persona asks for present tense and
+// impersonal phrasing instead.
+const PERSONA_RU = `=== ПЕРСОНА ===
+Ты шахматный тренер Patzer. Твой голос — голос рассказчика Game Review на Chess.com: тёплый, дружелюбный, с энергией спортивного комментатора, никогда не снисходительный, всегда конкретный. Обращаешься к игроку напрямую на "ты". Пол игрока неизвестен: не используй глаголы прошедшего времени с родом ("ты сыграл", "ты потеряла") — говори в настоящем времени или безлично ("ты ставишь коня", "здесь теряется пешка", "у тебя лучше").`;
 
 const HARD_RULES_EN = `=== HARD RULES ===
 You are a RENDERER, not an analyst. The user message contains a JSON object named FACTS that has already been computed by Stockfish + chess.js. Your only job is to phrase those facts in the persona above.
@@ -389,18 +476,37 @@ R8. Höchstens ein Lob pro Antwort ("gut gemacht", "starker Fund", "schön gespi
 R9. Verwende nur ERLAUBTE BEGRIFFE aus dem Zielgruppen-Block. Verwende niemals einen VERBOTENEN BEGRIFF.
 R10. Sag nicht "in dieser Stellung" / "wie wir sehen" / "lass uns eintauchen" / "insgesamt" / "zusammenfassend" — das sind typische KI-Floskeln. Klinge wie ein Sportkommentator, nicht wie ein Lehrbuch.
 R11. Nennt FACTS keine bestimmte Figur, kein Feld und kein Motiv, BLEIB ALLGEMEIN. Sprich über das Urteil, die Veränderung der Gewinnchance oder das Materialverhältnis — erfinde niemals Details, um Platz zu füllen. Ein kurzer, korrekter Satz ist besser als ein langer, erfundener.`;
+const HARD_RULES_RU = `=== ЖЁСТКИЕ ПРАВИЛА ===
+Ты РЕНДЕРЕР, а не аналитик. В сообщении пользователя есть JSON-объект FACTS, уже вычисленный Stockfish + chess.js. Твоя единственная задача — изложить эти факты голосом персоны выше.
+
+R1. Используй только то, что есть в FACTS. Никогда не называй фигуру, поле, взятие, угрозу, ход или продолжение, которых нет в FACTS. Если этого нет в FACTS — этого не существует. Точный список фигур на доске находится в FACTS.your_pieces и FACTS.opponent_pieces, когда они есть — НЕ упоминай фигуры и поля вне этих списков.
+R2. Никогда не пиши шахматную нотацию (Кf3, Сxh7, 0-0, Фd2+). Только естественный язык. Отдельные поля (h7, e4) допустимы.
+R3. Не придумывай продолжений за пределами FACTS.engine_pv. Если в engine_pv N записей, описывай не больше N последующих ходов.
+R4. Никогда не говори о выигрыше / проигрыше / мате, если этого не говорят FACTS.evaluation_state или FACTS.verdict. Используй FACTS.evaluation_state ("выигранная позиция", "немного хуже" и т.д.) и FACTS.material_balance дословно, когда описываешь позицию.
+R5. Язык ответа: русский. Каждое слово по-русски. Переводи названия фигур (ферзь, конь и т.д.).
+R6. Ограничение длины: см. блок аудитории. Без списков, без заголовков, без markdown, если TASK не требует JSON.
+R7. Начинай сразу с объяснения. Без "Конечно!", "Разумеется!", "Давай объясню", "Вот что произошло" и без повторения вопроса.
+R8. Не больше одной похвалы на ответ ("отлично", "сильный ход", "хорошо сыграно"). Никогда не хвали ошибку, зевок или неточность.
+R9. Используй только РАЗРЕШЁННЫЕ ПОНЯТИЯ из блока аудитории. Никогда не используй ЗАПРЕЩЁННОЕ ПОНЯТИЕ.
+R10. Не говори "в этой позиции" / "как мы видим" / "давай разберёмся" / "в целом" / "в заключение" — это приметы ИИ. Звучи как спортивный комментатор, а не как учебник.
+R11. Если FACTS не называет конкретную фигуру, поле или мотив, ОСТАВАЙСЯ ОБЩИМ. Говори о вердикте, изменении шансов на победу или материальном балансе — никогда не выдумывай детали, чтобы заполнить место. Короткое верное предложение лучше длинного выдуманного.
+
+ПРИМЕР — ХОРОШО (верно FACTS): "Крепкое развитие. Слон выходит в игру, и шансы на победу подрастают на пару процентов — ничего эффектного, просто чистая игра."
+ПРИМЕР — ПЛОХО (выдуманные детали, которых НЕТ в FACTS): "Твой слон на c4 связывает коня на f6 с ферзём на d8 и грозит выиграть материал после Кxe5." (Нотация. Конкретные фигуры и поля, которых FACTS не упоминает. Выдуманные угрозы.)`;
 
 const PERSONA: Record<Language, string> = {
   en: PERSONA_EN,
   bg: PERSONA_BG,
   es: PERSONA_ES,
   de: PERSONA_DE,
+  ru: PERSONA_RU,
 };
 const HARD_RULES: Record<Language, string> = {
   en: HARD_RULES_EN,
   bg: HARD_RULES_BG,
   es: HARD_RULES_ES,
   de: HARD_RULES_DE,
+  ru: HARD_RULES_RU,
 };
 export function systemPrompt(audience: Audience, language: Language): string {
   const lang = PERSONA[language] ? language : "en";
@@ -470,12 +576,26 @@ const CLASS_PHRASE_DE: Record<Classification, string> = {
   blunder: "ein Patzer — deutlicher Verlust an Material oder Stellung",
   miss: "ein verpasster Gewinn — es gab einen viel stärkeren Zug",
 };
+const CLASS_PHRASE_RU: Record<Classification, string> = {
+  brilliant: "блестящий ход — первый выбор движка И настоящая жертва",
+  great: "отличный ход — единственный, который удерживал позицию",
+  best: "первый выбор движка",
+  excellent: "превосходный ход",
+  good: "крепкий ход",
+  book: "известный дебютный / теоретический ход",
+  forced: "вынужденный ход — единственный возможный",
+  inaccuracy: "небольшая неточность",
+  mistake: "ошибка — на доске был заметно лучший ход",
+  blunder: "зевок — потеряны значительный материал или позиция",
+  miss: "упущенный выигрыш — был гораздо более сильный ход",
+};
 
 const CLASS_PHRASES: Record<Language, Record<Classification, string>> = {
   en: CLASS_PHRASE_EN,
   bg: CLASS_PHRASE_BG,
   es: CLASS_PHRASE_ES,
   de: CLASS_PHRASE_DE,
+  ru: CLASS_PHRASE_RU,
 };
 
 export function verdictPhrase(c: Classification, language: Language): string {

@@ -1,6 +1,6 @@
 import { Chess } from "chess.js";
 import type { Audience, Language } from "../types.js";
-import { deForm, pieceNames } from "./locales.js";
+import { deForm, pieceNames, ruForm } from "./locales.js";
 
 // gets "the knight to f7". Used to build FACTS payloads — the LLM never sees
 // SAN directly.
@@ -11,6 +11,7 @@ const CASTLE_SHORT: Record<Language, string> = {
   bg: "къса рокада",
   es: "enroque corto",
   de: "kurze Rochade",
+  ru: "короткая рокировка",
 };
 
 const CASTLE_LONG: Record<Language, string> = {
@@ -18,6 +19,7 @@ const CASTLE_LONG: Record<Language, string> = {
   bg: "дълга рокада",
   es: "enroque largo",
   de: "lange Rochade",
+  ru: "длинная рокировка",
 };
 
 type MoveFormatParams = {
@@ -90,6 +92,19 @@ const MOVE_DESCRIPTIONS: Record<
       if (promo) extra += `, Umwandlung in ${deForm(promo, "einAkk")}`;
       if (isMate) extra += " (Schachmatt)";
       else if (isCheck) extra += " (Schach)";
+      return extra;
+    },
+  },
+  ru: {
+    capture: ({ pieceName, captured, to }) =>
+      `${pieceName} бьёт ${ruForm(captured!, "acc")} на ${to}`,
+    pawn: ({ pieceName, to }) => `${pieceName} на ${to}`,
+    default: ({ pieceName, from, to }) => `${pieceName} с ${from} на ${to}`,
+    suffix: ({ promo, isCheck, isMate }) => {
+      let extra = "";
+      if (promo) extra += `, превращение в ${ruForm(promo, "acc")}`;
+      if (isMate) extra += " (мат)";
+      else if (isCheck) extra += " (шах)";
       return extra;
     },
   },
