@@ -289,7 +289,12 @@
     "mute": "Mute coach",
     "showFacts": "Show the FACTS sent to the model",
     "muted": "— muted —",
-    "contextSent": "Context sent to the model"
+    "contextSent": "Context sent to the model",
+    "error": "The coach could not answer. Check the AI server in Admin → System.",
+    "next": {
+      "learn": "Practise this in a lesson",
+      "train": "Puzzles from your mistakes"
+    }
   },
   "challenge": {
     "incoming": "New challenge",

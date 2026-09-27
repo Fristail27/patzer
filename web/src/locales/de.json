@@ -289,7 +289,12 @@
     "mute": "Coach stummschalten",
     "showFacts": "Die an das Modell gesendeten FAKTEN zeigen",
     "muted": "— stumm —",
-    "contextSent": "An das Modell gesendeter Kontext"
+    "contextSent": "An das Modell gesendeter Kontext",
+    "error": "Der Coach konnte nicht antworten. Prüfe den KI-Server unter Admin → System.",
+    "next": {
+      "learn": "In einer Lektion üben",
+      "train": "Aufgaben aus deinen Fehlern"
+    }
   },
   "challenge": {
     "incoming": "Neue Herausforderung",
