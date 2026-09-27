@@ -4,6 +4,31 @@ All notable changes to this project are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [7.16.1] — 2026-09-27
+
+### vLLM works again, and CI now runs the regression suites
+
+- **Fixed: the vLLM coach broke in 7.15.0.** Adding DeepSeek moved vLLM's
+  model list from `/v1/models` to `/models`, which vLLM doesn't serve — so
+  *Test* in **Admin → System** failed on every existing vLLM setup. Adding
+  `/v1` to the URL made the model list work but broke everything else
+  (`/v1/v1/chat/completions`): *Test ALL models*, the coach and Game Review.
+  vLLM's routes are back under `/v1` of the bare server URL, and a URL that
+  already ends in `/v1` works too, so nobody has to change their setting back.
+  Ollama and DeepSeek are unchanged.
+- **New: a regression suite for the LLM providers**
+  (`server/test/llm-providers.test.ts`, 33 tests). Fake Ollama, vLLM and
+  DeepSeek servers over real HTTP, each serving only the routes the real one
+  has; every entry point (model list, model test, coach stream, JSON review,
+  the Admin → System buttons) for every provider and every way of writing the
+  URL. Against the 7.16.0 code it fails 10 tests — exactly the two symptoms
+  above.
+- **CI runs the regression suites on every PR**: `test:e2e`, `test:resume`
+  and the two real-browser suites `test:ui` and `test:resume-ui`, a boot
+  check of the Docker image, and — when lesson content changes —
+  `verify:lessons`. CONTRIBUTING and the PR template now ask for a
+  regression test that fails without the fix with every bug fix.
+
 ## [7.16.0] — 2026-09-27
 
 ### A Learn section, Russian, and a round of fixes
