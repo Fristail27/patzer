@@ -14,7 +14,7 @@ import { classifyByWpDrop, refineClassification, normalizeEval, cpToWinPct, SCOR
 import { classifyTimeControl, type TimeClass } from '../chess/timeClass.js';
 import { GLICKO_DEFAULTS, inflateRd, updatePair } from '../chess/glicko.js';
 import { chatStream, llmConfigured } from '../coach/llm.js';
-import { systemPrompt, explainMovePrompt } from '../coach/prompts.js';
+import { coachExplain } from '../coach/explain.js';
 import type { AuthedUser, Difficulty, Classification } from '../types.js';
 import { notifyUser } from './lobby.js';
 
@@ -472,24 +472,17 @@ async function handleBotConnection(ws: WebSocket, user: AuthedUser) {
               (result.classification === 'blunder' || result.classification === 'mistake')
             ) {
               try {
-                const sys = systemPrompt(user.profile.audience, user.profile.language);
-                const usr = explainMovePrompt({
+                const answer = await coachExplain({
                   fen: fenBefore,
                   player: userPly % 2 === 1 ? 'White' : 'Black',
                   played_san: move.san,
                   best_san: result.best_san,
                   classification: result.classification,
                   cp_loss: result.cp_loss,
-                  pv_san: [],
                   user_perspective: true,
-                }, user.profile.language, user.profile.audience);
-                let acc = '';
-                await chatStream(
-                  [{ role: 'system', content: sys }, { role: 'user', content: usr }],
-                  (t) => { acc += t; send(ws, 'coach_chunk', { ply: userPly, text: t }); },
-                  { numPredict: 120, temperature: 0.3 },
-                );
-                send(ws, 'coach_done', { ply: userPly, text: acc });
+                }, user.id, user.profile.language, user.profile.audience, { numPredict: 200, temperature: 0.2 });
+                send(ws, 'coach_chunk', { ply: userPly, text: answer.text });
+                send(ws, 'coach_done', { ply: userPly, text: answer.text, actions: answer.actions });
               } catch (err) {
                 console.warn('[auto-coach] failed', err);
               }

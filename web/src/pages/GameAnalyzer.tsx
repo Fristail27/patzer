@@ -245,6 +245,9 @@ export default function GameAnalyzer() {
       eval_after_cp: move.eval_after_cp,
       pv_san: move.best_pv,
       history: historySoFar,
+      // Your own moves get "you" and your history (past mistakes of the same
+      // kind, weakest phase, the opening trainer); the opponent's get neither.
+      user_perspective: !!data.game.user_color && (ply % 2 === 1 ? 'white' : 'black') === data.game.user_color,
     },
   }) : null;
 

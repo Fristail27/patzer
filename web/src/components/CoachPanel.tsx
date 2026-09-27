@@ -1,12 +1,31 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Sparkles, Volume2, VolumeX, Pause, Play, Info } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Sparkles, Volume2, VolumeX, Pause, Play, Info, GraduationCap, Puzzle } from 'lucide-react';
 import { useAuth } from '../state/auth';
 import { speak, cancel as cancelSpeak } from '../lib/tts';
 import { renderMarkdown, stripReasoning } from '../lib/markdown';
 import { ThinkingDots } from './Spinner';
 
 const MUTE_STORAGE_KEY = 'coach.mute';
+
+/** A next step the server suggests with an answer — rendered as a link, never
+ *  written by the model, so it can't point anywhere that doesn't exist. */
+export type CoachAction = { kind: 'learn'; lesson: string } | { kind: 'train' };
+
+/** Parse one SSE block into its event name and data (data lines joined with
+ *  newlines, as the SSE spec says). */
+export function parseSseBlock(block: string): { event: string; data: string } {
+  let event = 'message';
+  const data: string[] = [];
+  for (const line of block.split('\n')) {
+    if (line.startsWith('event:')) event = line.slice(6).trim();
+    // Strip exactly ONE leading space after `data:`. trimStart() would eat
+    // token-leading spaces sent by the LLM and glue words together.
+    else if (line.startsWith('data:')) data.push(line.slice(5).replace(/^ /, ''));
+  }
+  return { event, data: data.join('\n') };
+}
 
 interface Props {
   systemConfigured: boolean;
@@ -27,6 +46,7 @@ export default function CoachPanel({ systemConfigured, request, autoPlay, trigge
   const [text, setText] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [actions, setActions] = useState<CoachAction[]>([]);
   const [speaking, setSpeaking] = useState(false);
   // The exact request body sent on the most-recent ask, surfaced via the
   // "Show context" toggle so the user can see what FACTS the LLM had to work
@@ -56,7 +76,7 @@ export default function CoachPanel({ systemConfigured, request, autoPlay, trigge
     abortRef.current?.abort();
     const ac = new AbortController(); abortRef.current = ac;
 
-    setText(''); setBusy(true); setError(null);
+    setText(''); setBusy(true); setError(null); setActions([]);
     const { url, body } = request();
     setLastBody(body);
     let acc = '';
@@ -82,16 +102,14 @@ export default function CoachPanel({ systemConfigured, request, autoPlay, trigge
         while ((nl = buf.indexOf('\n\n')) >= 0) {
           const block = buf.slice(0, nl);
           buf = buf.slice(nl + 2);
-          for (const line of block.split('\n')) {
-            if (line.startsWith('data:')) {
-              // Per SSE spec, strip exactly ONE leading space after `data:`.
-              // Using trimStart() here would eat token-leading spaces sent by
-              // the LLM, collapsing output into one long word.
-              acc += line.slice(5).replace(/^ /, '');
-              setText(acc);
-            } else if (line.startsWith('event: error')) {
-              setError('coach error');
-            }
+          const { event, data } = parseSseBlock(block);
+          if (event === 'message') {
+            acc += data;
+            setText(acc);
+          } else if (event === 'actions') {
+            try { setActions(JSON.parse(data) as CoachAction[]); } catch { /* ignore */ }
+          } else if (event === 'error') {
+            setError(t('coach.error'));
           }
         }
       }
@@ -191,6 +209,19 @@ export default function CoachPanel({ systemConfigured, request, autoPlay, trigge
           style={{ overflowWrap: 'anywhere', wordBreak: 'break-word' }}
           dangerouslySetInnerHTML={{ __html: renderMarkdown(stripReasoning(text)) }}
         />
+      )}
+      {!muted && !busy && actions.length > 0 && (
+        <div className="mt-3 flex flex-wrap gap-2">
+          {actions.map((a) => a.kind === 'learn' ? (
+            <Link key={`learn-${a.lesson}`} to={`/learn?lesson=${encodeURIComponent(a.lesson)}`} className="btn-secondary text-xs">
+              <GraduationCap className="h-3.5 w-3.5" /> {t('coach.next.learn')}
+            </Link>
+          ) : (
+            <Link key="train" to="/train" className="btn-secondary text-xs">
+              <Puzzle className="h-3.5 w-3.5" /> {t('coach.next.train')}
+            </Link>
+          ))}
+        </div>
       )}
       {!muted && busy && text && (
         <div className="mt-2 text-xs text-ink-400"><ThinkingDots /></div>

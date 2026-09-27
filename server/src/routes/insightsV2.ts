@@ -14,6 +14,7 @@ import { db } from '../db.js';
 import { requireAuth } from '../auth/middleware.js';
 import { SCORING_VERSION } from '../chess/classifier.js';
 import type { AnalyzedMove, GamePhase, PhaseSplit, Color } from '../types.js';
+import { phaseFor, hasBackRankSignature } from '../chess/phases.js';
 
 const router = new Hono();
 router.use('*', requireAuth);
@@ -226,29 +227,5 @@ router.get('/', (c) => {
     accuracy_trend: accTrend.slice(0, 50).reverse(),
   });
 });
-
-function phaseFor(ply: number, split: PhaseSplit | null): GamePhase {
-  if (!split) return ply <= 14 ? 'opening' : ply <= 40 ? 'middlegame' : 'endgame';
-  if (split.opening && ply >= split.opening.from_ply && ply <= split.opening.to_ply) return 'opening';
-  if (split.endgame && ply >= split.endgame.from_ply && ply <= split.endgame.to_ply) return 'endgame';
-  return 'middlegame';
-}
-
-function hasBackRankSignature(fen: string, userColor: Color): boolean {
-  const board = fen.split(' ')[0] ?? '';
-  const ranks = board.split('/');
-  const backRank = userColor === 'white' ? ranks[7] : ranks[0];
-  if (!backRank) return false;
-  const target = userColor === 'white' ? 'K' : 'k';
-  if (!backRank.includes(target)) return false;
-  let nonKing = 0;
-  for (const ch of backRank) {
-    if (/\d/.test(ch)) continue;
-    if (ch !== target && ((userColor === 'white' && ch === ch.toUpperCase()) || (userColor === 'black' && ch === ch.toLowerCase()))) {
-      nonKing++;
-    }
-  }
-  return nonKing === 0;
-}
 
 export default router;

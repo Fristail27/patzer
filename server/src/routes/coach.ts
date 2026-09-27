@@ -2,15 +2,15 @@ import { Hono } from 'hono';
 import { z } from 'zod';
 import { streamSSE } from 'hono/streaming';
 import { requireAuth } from '../auth/middleware.js';
-import { chatStream, llmUrl } from '../coach/llm.js';
-import { systemPrompt, explainMovePrompt, hintPrompt } from '../coach/prompts.js';
+import { llmConfigured } from '../coach/llm.js';
+import { coachExplain, coachHint } from '../coach/explain.js';
 import type { Audience, Classification, Language } from '../types.js';
 
 const router = new Hono();
 router.use('*', requireAuth);
 
 router.get('/status', (c) => {
-  return c.json({ configured: llmUrl() !== null });
+  return c.json({ configured: llmConfigured() });
 });
 
 const explainSchema = z.object({
@@ -39,31 +39,18 @@ router.post('/explain', async (c) => {
   if (!parsed.success) return c.json({ error: 'invalid_input' }, 400);
   const lang: Language = parsed.data.language ?? user.profile.language;
   const aud: Audience = parsed.data.audience ?? user.profile.audience;
-
-  const sys = systemPrompt(aud, lang);
-  const usr = explainMovePrompt({
-    fen: parsed.data.fen,
-    player: parsed.data.player,
-    played_san: parsed.data.played_san,
-    best_san: parsed.data.best_san,
-    classification: parsed.data.classification as Classification,
-    cp_loss: parsed.data.cp_loss,
-    eval_before_cp: parsed.data.eval_before_cp,
-    eval_after_cp: parsed.data.eval_after_cp,
-    pv_san: parsed.data.pv_san,
-    history: parsed.data.history,
-    user_perspective: parsed.data.user_perspective,
-  }, lang, aud);
+  const { language: _l, audience: _a, ...params } = parsed.data;
 
   return streamSSE(c, async (stream) => {
     try {
-      await chatStream(
-        [{ role: 'system', content: sys }, { role: 'user', content: usr }],
-        async (chunk) => { await stream.writeSSE({ data: chunk }); },
-        // Aggressive low temperature — we want faithful rendering of FACTS,
-        // not creative chess prose. Small models hallucinate freely above 0.2.
-        { temperature: 0.15 },
+      // Generated in full and checked against the verdict before it is sent
+      // (see coach/explain.ts), so it arrives in one piece, not token by token.
+      const answer = await coachExplain(
+        { ...params, classification: params.classification as Classification },
+        user.id, lang, aud,
       );
+      if (answer.actions.length) await stream.writeSSE({ event: 'actions', data: JSON.stringify(answer.actions) });
+      await stream.writeSSE({ data: answer.text });
     } catch (err) {
       await stream.writeSSE({ event: 'error', data: err instanceof Error ? err.message : String(err) });
     }
@@ -86,16 +73,13 @@ router.post('/hint', async (c) => {
   const lang: Language = parsed.data.language ?? user.profile.language;
   const aud: Audience = parsed.data.audience ?? user.profile.audience;
 
-  const sys = systemPrompt(aud, lang);
-  const usr = hintPrompt(parsed.data.fen, aud, lang, parsed.data.history);
-
   return streamSSE(c, async (stream) => {
     try {
-      await chatStream(
-        [{ role: 'system', content: sys }, { role: 'user', content: usr }],
+      const { actions } = await coachHint(
+        parsed.data.fen, parsed.data.history ?? [], user.id, lang, aud,
         async (chunk) => { await stream.writeSSE({ data: chunk }); },
-        { temperature: 0.3 },
       );
+      if (actions.length) await stream.writeSSE({ event: 'actions', data: JSON.stringify(actions) });
     } catch (err) {
       await stream.writeSSE({ event: 'error', data: err instanceof Error ? err.message : String(err) });
     }

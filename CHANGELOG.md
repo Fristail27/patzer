@@ -4,6 +4,59 @@ All notable changes to this project are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [7.17.0] — 2026-09-27
+
+### The coach coaches
+
+The coach used to narrate: it named the move, repeated its label and stopped.
+It saw nothing but the one move — not why it was bad, not what was better,
+not the player's own games. Worse, it could contradict the engine: in
+discussion #37 Game Review called 3…Nf6?? (which allows 4.Qxf7#) a blunder
+while the coach called it a great move. That wasn't a small model's fault —
+a 27B model did the same, three times out of three, because the prompt gave
+it nothing to explain and an example sentence that praised development.
+
+- **Fixed: the coach can no longer contradict the engine.** Every answer is
+  checked against the verdict before it is shown. Praise for a mistake gets
+  one retry with a correction, and if the model does it again the player gets
+  a plain answer built from the facts instead. The prompt now puts the
+  verdict first, forbids praise for mistakes outright, and the example
+  sentences that small models copied word for word are gone in every
+  language. (#37)
+- **New: why a move is good or bad.** The server works out what a move
+  allows, leaves hanging, wins, forks, stops or threatens (chess.js), and
+  the opponent's best answer as a short line (Stockfish) — "this lets the
+  queen take on f7 with checkmate", not "a blunder".
+- **New: the better idea, and alternatives.** The best move and the other
+  moves that are nearly as good, each with what it achieves ("the pawn to g6:
+  it stops the checkmate threat and attacks the queen").
+- **New: the coach remembers your games.** Your recurring mistake types over
+  the last 30 analysed games (allowing a quick mate, leaving a piece
+  unprotected, missing a mate, a win or a tactic), your weakest phase, your
+  best finds, and positions you got wrong in the opening trainer — brought
+  up when the move on the board is the same kind.
+- **New: a rule to remember and a next step.** Each mistake ends with a rule
+  of thumb for that kind of error, and the coach links the matching Learn
+  lesson and your puzzles.
+- **New: hints that coach.** A hint now knows the position — a mate threat,
+  pieces under attack, a loose enemy piece, undeveloped pieces, an uncastled
+  king, and what the engine's best move achieves — and points you there
+  without naming the move.
+- **Play gets the same coach as Game Review.** Play never sent an evaluation
+  or engine line; the coach now runs its own short engine search, so a move
+  in a live game is explained as fully as one in Game Review. The in-game
+  auto-coach uses the same pipeline and guard.
+- **Fixed: Bulgarian and Russian "better move" read as praise.** Found while
+  testing the guard against every verdict in every language.
+- The coach panel no longer shows a server error message as if it were
+  coaching, and keeps paragraph breaks.
+
+Tests: 46 new — tactics detection, the coaching facts, the guard in all five
+languages (including every verdict phrase), the player memory (and its speed:
+30 games in under a second on a real account, down from 17.8 s during
+development), and the #37 regression end to end through the real route with a
+fake LLM that praises the blunder. Against the 7.16 code that suite fails.
+
 ## [7.16.1] — 2026-09-27
 
 ### vLLM works again, and CI now runs the regression suites

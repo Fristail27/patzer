@@ -237,6 +237,11 @@
       "silent": "Silencioso",
       "on_demand": "Bajo demanda",
       "always_on_pedagogical": "Siempre activo (pedagógico)"
+    },
+    "error": "El entrenador no pudo responder. Revisa el servidor de IA en Admin → Sistema.",
+    "next": {
+      "learn": "Practica esto en una lección",
+      "train": "Ejercicios con tus errores"
     }
   },
   "challenge": {
