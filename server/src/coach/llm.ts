@@ -86,11 +86,23 @@ let lastError: string | null = null;
 let lastModelUsed: string | null = null;
 
 // OpenAI-compatible providers (vLLM, DeepSeek) speak the same dialect; these
-// helpers centralize the two places they differ — the endpoint suffix and the
-// auth header (DeepSeek needs a Bearer key, vLLM is usually unauthenticated).
+// helpers centralize the two places they differ — where the API root is and
+// the auth header (DeepSeek needs a Bearer key, vLLM is usually unauthenticated).
+//
+// The vLLM URL is the bare server (`http://host:8000`) and its routes live
+// under `/v1` — for models *and* chat. 7.15.0 dropped the `/v1` from the model
+// list, which broke "Test" on every existing vLLM setup, and adding `/v1` to
+// the URL as a workaround then broke chat (`/v1/v1/…`). A vLLM URL that already
+// ends in `/v1` is accepted, since that is how OpenAI base URLs are usually
+// written. DeepSeek's URL is already the API root. server/test/llm-providers
+// pins every route.
 type OpenAiLike = 'vllm' | 'deepseek';
-function openAiEndpoint(base: string, provider: OpenAiLike): string {
-  return `${base}${provider === 'deepseek' ? '/chat/completions' : '/v1/chat/completions'}`;
+export function openAiRoot(url: string, provider: OpenAiLike): string {
+  const base = url.replace(/\/+$/, '');
+  return provider === 'vllm' ? `${base.replace(/\/v1$/, '')}/v1` : base;
+}
+function openAiEndpoint(base: string, provider: OpenAiLike, path: 'models' | 'chat/completions' = 'chat/completions'): string {
+  return `${openAiRoot(base, provider)}/${path}`;
 }
 function openAiHeaders(provider: OpenAiLike): Record<string, string> {
   const h: Record<string, string> = { 'Content-Type': 'application/json' };
@@ -99,14 +111,14 @@ function openAiHeaders(provider: OpenAiLike): Record<string, string> {
 }
 
 /** List models available on the configured host, normalized across providers.
- *  Ollama exposes its native `/api/tags`; vLLM and DeepSeek expose an
- *  OpenAI-compatible `/models` (one entry per served model). */
+ *  Ollama exposes its native `/api/tags`; vLLM (`/v1/models`) and DeepSeek
+ *  (`/models`) expose the OpenAI-compatible list (one entry per served model). */
 export async function testConnection(url: string, provider: LlmProvider = llmProvider()): Promise<{ ok: true; models: LlmModel[] } | { ok: false; error: string }> {
   const base = url.replace(/\/$/, '');
   try {
     if (provider === 'vllm' || provider === 'deepseek') {
       if (provider === 'deepseek' && !deepseekApiKey()) return { ok: false, error: 'deepseek_api_key_missing' };
-      const res = await fetch(`${base}/models`, {
+      const res = await fetch(openAiEndpoint(base, provider, 'models'), {
         headers: provider === 'deepseek' ? { Authorization: `Bearer ${deepseekApiKey() ?? ''}` } : undefined,
         signal: AbortSignal.timeout(8000),
       });

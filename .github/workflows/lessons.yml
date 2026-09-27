@@ -1,0 +1,33 @@
+name: Lessons
+
+# Asks Stockfish whether every Learn task's answer really is the one clearly
+# best move. Takes a few minutes, so it runs only when lesson content or the
+# checker changes.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'web/src/learn/**'
+      - 'web/src/locales/learn/**'
+      - 'scripts/verify-lessons.mjs'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'web/src/learn/**'
+      - 'web/src/locales/learn/**'
+      - 'scripts/verify-lessons.mjs'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    name: Verify lessons with Stockfish
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run setup
+      - run: npm run verify:lessons

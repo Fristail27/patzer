@@ -34,6 +34,53 @@ jobs:
       - name: Build (server + web)
         run: npm run build
 
+  # Regression suites against a real server: two WebSocket clients through a
+  # full PvP game, reconnect/resume after a dropped socket, and the same two
+  # flows in real browsers clicking the board. These catch what unit tests
+  # can't — a board that renders but ignores clicks has shipped twice. Every
+  # PR must pass them.
+  regression:
+    runs-on: ubuntu-latest
+    name: Regression (e2e + browser)
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build (server + web)
+        run: npm run build
+
+      - name: Install Stockfish
+        run: npm run setup
+
+      # playwright is deliberately not a project dependency (see CONTRIBUTING).
+      # Installing it into the project with npm prunes esbuild's platform
+      # binary from node_modules, so it goes into its own prefix and is linked in.
+      - name: Install playwright + Chromium
+        run: |
+          npm install --prefix "$RUNNER_TEMP/pw" --no-audit --no-fund playwright
+          ln -sfn "$RUNNER_TEMP/pw/node_modules/playwright" node_modules/playwright
+          "$RUNNER_TEMP/pw/node_modules/.bin/playwright" install --with-deps chromium
+
+      - name: PvP protocol (test:e2e)
+        run: npm run test:e2e
+
+      - name: Reconnect and resume (test:resume)
+        run: npm run test:resume
+
+      - name: PvP in two browsers (test:ui)
+        run: npm run test:ui
+
+      - name: Resume in a browser (test:resume-ui)
+        run: npm run test:resume-ui
+
   docker:
     runs-on: ubuntu-latest
     name: Docker image builds
@@ -49,3 +96,13 @@ jobs:
           tags: patzer:ci
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      # The image must actually start: a fresh database, migrations, the API
+      # and the web app, from the image users pull.
+      - name: Boot smoke test
+        run: |
+          docker run -d --name patzer-ci -p 8800:8800 patzer:ci
+          for i in $(seq 1 30); do curl -sf http://127.0.0.1:8800/api/meta && break; sleep 2; done
+          curl -sf http://127.0.0.1:8800/api/meta
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8800/)" = 200
+          docker logs patzer-ci
