@@ -5,7 +5,10 @@
 ## Test plan
 
 - [ ] `npm run typecheck` passes
+- [ ] `npm test` passes
 - [ ] `npm run build` passes
+- [ ] New or changed behaviour has tests; a bug fix has a regression test that fails without the fix
+- [ ] (if touching Play, the board or WebSockets) `npm run test:e2e`, `test:resume`, `test:ui`, `test:resume-ui` pass
 - [ ] Manually exercised the affected screens
 - [ ] (if touching analysis) Verified eval/classification on a known game
 

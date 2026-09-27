@@ -59,7 +59,18 @@ npm test
 npm run build
 ```
 
-All three must be green. CI runs them on Node 20 and 22 plus a Docker image build.
+All three must be green. CI runs them on Node 20 and 22, plus the regression suites below
+(`test:e2e`, `test:resume`, `test:ui`, `test:resume-ui`) against a real server, a Docker image
+build that has to boot, and — when lesson content changes — `verify:lessons`. A PR is only
+merged with all of it green.
+
+**Every change comes with tests.** A new feature gets unit tests for its logic. A bug fix gets
+a regression test that **fails without the fix** — say so in the PR, ideally with the failing
+output. Anything that talks to an outside service (an LLM, Lichess, chess.com) is tested
+against a local fake that serves only the routes the real one has, so a wrong URL or path
+fails in CI instead of on someone's server — see `server/test/llm-providers.test.ts`. That
+suite exists because 7.15.0 broke every vLLM setup with a one-word path change that no test
+looked at.
 
 ## Tests
 
