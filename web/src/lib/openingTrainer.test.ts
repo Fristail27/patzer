@@ -44,7 +44,7 @@ describe('opening trainer helpers', () => {
 
   it('names a move with its number', () => {
     const line = ['e4', 'e5', 'Nf3', 'f6', 'Nxe5'];
-    expect(moveLabel(line, 3)).toBe('2...f6');
+    expect(moveLabel(line, 3)).toBe('2…f6');
     expect(moveLabel(line, 4)).toBe('3.Nxe5');
   });
 

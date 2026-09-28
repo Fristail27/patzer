@@ -45,10 +45,10 @@ export function branchDrills(line: DrillLine): DrillLine[] {
   }));
 }
 
-/** "3...Nf6" / "4.Nxe5" — move `i` of a line with its number. */
+/** "3…Nf6" / "4.Nxe5" — move `i` of a line with its number. */
 export function moveLabel(moves: string[], i: number): string {
   const n = Math.floor(i / 2) + 1;
-  return `${n}${i % 2 === 0 ? '.' : '...'}${moves[i] ?? ''}`;
+  return `${n}${i % 2 === 0 ? '.' : '…'}${moves[i] ?? ''}`;
 }
 
 /** Whose move is at 0-based index `ply` of a line. */
