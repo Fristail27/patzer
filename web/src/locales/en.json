@@ -640,6 +640,7 @@
     "levelUp": "Level {{n}} reached!",
     "toNextLevel_one": "{{count}} more star to level {{n}}",
     "toNextLevel_other": "{{count}} more stars to level {{n}}",
+    "starsExplained": "Each lesson gives up to 3 stars – the fewer hints and wrong tries, the more. Your stars add up to your level, and you can repeat any lesson to collect the ones you missed.",
     "lessonsDone": "{{done}}/{{total}} lessons",
     "startHere": "Start here",
     "nextUp": "Next lesson",
