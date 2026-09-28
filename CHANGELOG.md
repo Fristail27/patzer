@@ -4,6 +4,22 @@ All notable changes to this project are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **Train: puzzles (beta).** A second tab next to the puzzles from your own
+  games: about 4,000 popular Lichess puzzles (CC0) from rating 400 to 2600,
+  shipped with Patzer, no network needed. Each profile gets a puzzle rating
+  (Glicko-1, like the game ratings, starting at 1200); the next puzzle is one
+  you haven't tried, close to your rating. Like on chess.com the first try
+  counts — a wrong move, a hint or "show solution" and it counts as not
+  solved, but you can still finish it. Multi-move solutions, the opponent's
+  replies played for you, any checkmate accepted on the last move, and filters
+  for checkmate, forks, pins, discovered attacks, sacrifices, hanging pieces,
+  defence and endgames. When your own puzzles run out, the empty page points
+  here.
+
 ## [7.17.1] — 2026-09-27
 
 ### Finished games no longer hang on "Saving game…"

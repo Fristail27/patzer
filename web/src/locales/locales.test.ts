@@ -74,6 +74,7 @@ describe('ru locale', () => {
     'insights.ach.learning', 'common.beta',
     'achievements.first_lesson.', 'achievements.eager_student.', 'achievements.star_collector.',
     'admin.deepseek', 'admin.engineBackendNote', 'setup.llmHint', 'review.importError.import_in_progress',
+    'train.tabs.', 'train.puzzles.',
   ];
 
   it('has every key that en has, and nothing else', () => {

@@ -586,7 +586,47 @@
     "nextPuzzle": "Next puzzle",
     "openInReview": "Open this position in the full review",
     "correct": "Correct!",
-    "wrong": "Not quite — the engine prefers"
+    "wrong": "Not quite — the engine prefers",
+    "tabs": {
+      "mine": "From your games",
+      "puzzles": "Puzzles"
+    },
+    "puzzles": {
+      "intro": "Tactic puzzles from the Lichess puzzle database, chosen to match your puzzle rating. The first try counts: solve it and your rating goes up.",
+      "loadError": "Couldn't load a puzzle.",
+      "allDone": "You've tried every puzzle here – impressive!",
+      "yourRating": "Your puzzle rating",
+      "solvedOf": "{{solved}} of {{played}} solved",
+      "provisional": "Still settling in – it moves a lot in your first puzzles.",
+      "watch": "Watch your opponent’s move …",
+      "findWhite": "White to move. Find the best move!",
+      "findBlack": "Black to move. Find the best move!",
+      "wrong": "Not the best move – the board went back. Try again!",
+      "solved": "Solved!",
+      "solvedLate": "Solved – but not at the first try, so it counts as not solved.",
+      "showing": "Here is the solution …",
+      "shownDone": "That was the solution.",
+      "notRated": "This puzzle already counts as not solved – but finish it anyway.",
+      "hint": "Hint",
+      "hintMove": "Show the move",
+      "solution": "Show solution",
+      "tryIt": "Try it yourself",
+      "next": "Next puzzle",
+      "puzzleRating": "Puzzle rating {{rating}}",
+      "onLichess": "On lichess.org",
+      "rules": "A wrong move, a hint or the solution and the puzzle counts as not solved. Every puzzle comes only once.",
+      "themes": {
+        "all": "All",
+        "mate": "Checkmate",
+        "fork": "Fork",
+        "pin": "Pin & skewer",
+        "discovered": "Discovered attack",
+        "sacrifice": "Sacrifice",
+        "hanging": "Hanging & trapped pieces",
+        "defence": "Defence",
+        "endgame": "Endgame"
+      }
+    }
   },
   "learn": {
     "nav": "Learn",
