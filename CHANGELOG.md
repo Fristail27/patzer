@@ -4,6 +4,24 @@ All notable changes to this project are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **Opening trainer: deviations.** Real opponents rarely stay on the main
+  line. Every built-in line now comes with the opponent's most common other
+  moves and a few tempting ones a beginner meets (2...f6 against the Italian,
+  3...Nd4, the Albin Counter-Gambit, 2.Qh5 against 1...e5) — 47 in all. After
+  a line, or straight from "Do you know this line?", choose *Practise the
+  deviations*: each starts just before the other move, Patzer plays it, and
+  you find how to go on (or how to punish it). Every one of your moves in them
+  is checked with Stockfish at depth 18: none is more than half a pawn worse
+  than the engine's best. Lines from your own repertoire get their deviations
+  from your games: where your opponents played something else, and — where
+  the analysis called your reply a mistake — the engine's move instead, so
+  you practise what you should have played. Missed moves go into the daily
+  review like any other.
+
 ## [7.17.1] — 2026-09-27
 
 ### Finished games no longer hang on "Saving game…"
