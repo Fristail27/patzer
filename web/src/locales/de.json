@@ -660,7 +660,7 @@
       },
       "beginner": {
         "title": "Einsteiger",
-        "desc": "Grundmatts, erste Taktiken und wie man eine Partie beginnt."
+        "desc": "Grundmatts, erste Taktik, Verteidigen und wie man eine Partie beginnt."
       },
       "intermediate": {
         "title": "Fortgeschritten",
@@ -668,7 +668,7 @@
       },
       "advanced": {
         "title": "Könner",
-        "desc": "Stille Züge, Zugzwang, tiefere Kombinationen und Turmendspiele."
+        "desc": "Stille Züge, Zugzwang, seltene Mattbilder, Matt in vier sowie Turm-, Damen- und Leichtfigurenendspiele."
       }
     },
     "readAloud": "Vorlesen",

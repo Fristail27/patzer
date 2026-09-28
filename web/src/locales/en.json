@@ -660,7 +660,7 @@
       },
       "beginner": {
         "title": "Beginner",
-        "desc": "Basic checkmates, first tactics and how to start a game."
+        "desc": "Basic checkmates, first tactics, defending, and how to start a game."
       },
       "intermediate": {
         "title": "Intermediate",
@@ -668,7 +668,7 @@
       },
       "advanced": {
         "title": "Advanced",
-        "desc": "Quiet moves, zugzwang, deeper combinations and rook endgames."
+        "desc": "Quiet moves, zugzwang, rare mating patterns, mate in four, and rook, queen and minor-piece endgames."
       }
     },
     "readAloud": "Read aloud",
