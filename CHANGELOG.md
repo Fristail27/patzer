@@ -4,6 +4,15 @@ All notable changes to this project are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **Insights: move quality.** A new card counts your own moves by
+  classification — brilliant, great, best, … down to blunders — across your
+  analyzed games, with a bar and a share for each, and lists your most recent
+  brilliant moves; one click opens Game Review on that very move.
+
 ## [7.17.1] — 2026-09-27
 
 ### Finished games no longer hang on "Saving game…"
