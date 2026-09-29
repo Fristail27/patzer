@@ -4,6 +4,18 @@ All notable changes to this project are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- **Real-board move sounds from the very first move.** With "Real board"
+  chosen, the first move after opening a page still played the synthesized
+  knock — the recordings only started loading with the first sound. Most
+  noticeable where Patzer moves first by itself, like the opponent's first
+  move in the opening trainer, or the first move in a lesson. The recordings
+  now download as soon as the setting is known, and a move sound that comes
+  while they're still loading waits for them (at most 0.4 s).
+
 ## [7.17.1] — 2026-09-27
 
 ### Finished games no longer hang on "Saving game…"
