@@ -60,6 +60,10 @@ export default function Train() {
             <p className="page-sub">{t('train.puzzles.intro')}</p>
           </header>
           <TacticsPuzzles />
+          <footer className="pt-2 text-center text-xs text-chesscom-400">
+            {t('train.puzzles.credit')}{' '}
+            <a href="https://database.lichess.org/#puzzles" target="_blank" rel="noreferrer noopener" className="underline underline-offset-2 hover:text-chesscom-600 dark:hover:text-chesscom-200">database.lichess.org</a>
+          </footer>
         </>
       ) : <FromYourGames onPuzzles={() => setTab('puzzles')} />}
     </div>

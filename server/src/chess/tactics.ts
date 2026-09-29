@@ -2,7 +2,7 @@
 // Trainer (puzzles from your own mistakes, routes/train.ts) these are puzzles
 // from the Lichess puzzle database (CC0) that ship with Patzer: a few thousand
 // popular, often-played ones spread over the whole rating range
-// (chess/tacticsSet.ts, generated — see the header there).
+// (chess/tacticsSet.json, made by scripts/build-tactics-set.mjs — see there).
 //
 // Each profile has a puzzle rating (Glicko-1, the same maths as the game
 // ratings). A puzzle counts as a game against its own Lichess rating; only the
@@ -11,7 +11,7 @@
 
 import { db } from '../db.js';
 import { GLICKO_DEFAULTS, PROVISIONAL_RD_THRESHOLD, inflateRd, updateGlicko } from './glicko.js';
-import { TACTICS_DATA } from './tacticsSet.js';
+import TACTICS_SET from './tacticsSet.json' with { type: 'json' };
 
 export interface TacticsPuzzle {
   id: string;
@@ -44,7 +44,7 @@ let cache: TacticsPuzzle[] | null = null;
 /** Every puzzle, sorted by rating (parsed once, on first use). */
 export function allPuzzles(): TacticsPuzzle[] {
   if (cache) return cache;
-  cache = TACTICS_DATA.trim().split('\n').map((line) => {
+  cache = TACTICS_SET.puzzles.map((line) => {
     const [id, fen, moves, rating, themes] = line.split('|');
     return { id: id!, fen: fen!, moves: moves!.split(' '), rating: Number(rating), themes: themes ? themes.split(' ') : [] };
   }).sort((a, b) => a.rating - b.rating);

@@ -614,6 +614,7 @@
       "next": "Next puzzle",
       "puzzleRating": "Puzzle rating {{rating}}",
       "onLichess": "On lichess.org",
+      "credit": "Puzzles from the Lichess puzzle database (CC0):",
       "rules": "A wrong move, a hint or the solution and the puzzle counts as not solved. Every puzzle comes only once.",
       "themes": {
         "all": "All",

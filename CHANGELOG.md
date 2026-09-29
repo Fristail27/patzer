@@ -18,7 +18,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   replies played for you, any checkmate accepted on the last move, and filters
   for checkmate, forks, pins, discovered attacks, sacrifices, hanging pieces,
   defence and endgames. When your own puzzles run out, the empty page points
-  here.
+  here. The set is one JSON file (`server/src/chess/tacticsSet.json`,
+  460 KB); `npm run build:tactics` rebuilds it from the Lichess puzzle
+  database, and the page credits the database in its footer.
 
 ## [7.17.1] — 2026-09-27
 

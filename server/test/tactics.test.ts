@@ -1,7 +1,8 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { mkdtempSync, readFileSync, readdirSync, rmSync, statSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { Chess } from 'chess.js';
 
 // The module under test opens the real database on import, so point it at a
@@ -41,6 +42,20 @@ describe('the puzzle set', () => {
       expect(p.moves.length % 2, p.id).toBe(0);
     }
   }, 30_000); // replays ~20,000 moves — slow on a busy machine
+
+  it('ships as one JSON file under 1 MB and leaves out the Learn puzzles', () => {
+    const file = fileURLToPath(new URL('../src/chess/tacticsSet.json', import.meta.url));
+    expect(statSync(file).size).toBeLessThan(1024 * 1024);
+    // scripts/build-tactics-set.mjs skips the puzzles the lessons use — after
+    // new lessons, run it again.
+    const lessons = fileURLToPath(new URL('../../web/src/learn/content', import.meta.url));
+    const inLessons = new Set<string>();
+    for (const f of readdirSync(lessons).filter((n) => n.endsWith('.json'))) {
+      for (const m of readFileSync(join(lessons, f), 'utf8').matchAll(/"src":\s*"([^"]+)"/g)) inLessons.add(m[1]!);
+    }
+    expect(inLessons.size).toBeGreaterThan(0);
+    expect(tactics.allPuzzles().filter((p) => inLessons.has(p.id)).map((p) => p.id)).toEqual([]);
+  });
 
   it('has puzzles for every theme filter', () => {
     for (const [theme, tags] of Object.entries(tactics.THEME_FILTERS)) {
