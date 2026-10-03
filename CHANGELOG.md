@@ -51,6 +51,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   here. The set is one JSON file (`server/src/chess/tacticsSet.json`,
   460 KB); `npm run build:tactics` rebuilds it from the Lichess puzzle
   database, and the page credits the database in its footer.
+- **Learn: 15 new lessons** (69 in all), each with an explanation and six
+  tasks. Beginner: *Defend!*, *The weak point f7* and *Pawn on the run*.
+  Intermediate: *Discovered check*, *The exposed king*, and three more mating
+  patterns — the Opera mate, the hook mate and Pillsbury's mate. Advanced:
+  *The only move*, a new course *Rare mating patterns* (Boden's mate, the
+  dovetail, the bishop pair, mate in four) and a new course *Queen and
+  minor-piece endgames*. As before, every task is a Lichess puzzle (CC0) that
+  Stockfish confirmed at depth 20 to have exactly one right answer, and no
+  puzzle appears twice; texts in English and German, with kid versions.
+- **Learn:** the overview now explains how stars and levels work.
 
 ## [7.17.1] — 2026-09-27
 

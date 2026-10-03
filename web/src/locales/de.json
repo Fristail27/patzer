@@ -640,6 +640,7 @@
     "levelUp": "Level {{n}} erreicht!",
     "toNextLevel_one": "Noch {{count}} Stern bis Level {{n}}",
     "toNextLevel_other": "Noch {{count}} Sterne bis Level {{n}}",
+    "starsExplained": "Jede Lektion bringt bis zu 3 Sterne – je weniger Tipps und Fehlversuche, desto mehr. Deine Sterne ergeben zusammen dein Level, und du kannst jede Lektion wiederholen, um fehlende Sterne zu holen.",
     "lessonsDone": "{{done}}/{{total}} Lektionen",
     "startHere": "Hier geht's los",
     "nextUp": "Nächste Lektion",
@@ -659,7 +660,7 @@
       },
       "beginner": {
         "title": "Einsteiger",
-        "desc": "Grundmatts, erste Taktiken und wie man eine Partie beginnt."
+        "desc": "Grundmatts, erste Taktik, Verteidigen und wie man eine Partie beginnt."
       },
       "intermediate": {
         "title": "Fortgeschritten",
@@ -667,7 +668,7 @@
       },
       "advanced": {
         "title": "Könner",
-        "desc": "Stille Züge, Zugzwang, tiefere Kombinationen und Turmendspiele."
+        "desc": "Stille Züge, Zugzwang, seltene Mattbilder, Matt in vier sowie Turm-, Damen- und Leichtfigurenendspiele."
       }
     },
     "readAloud": "Vorlesen",
