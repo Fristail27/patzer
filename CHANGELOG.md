@@ -36,6 +36,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the analysis called your reply a mistake — the engine's move instead, so
   you practise what you should have played. Missed moves go into the daily
   review like any other.
+### Added
+
+- **Train: puzzles (beta).** A second tab next to the puzzles from your own
+  games: about 4,000 popular Lichess puzzles (CC0) from rating 400 to 2600,
+  shipped with Patzer, no network needed. Each profile gets a puzzle rating
+  (Glicko-1, like the game ratings, starting at 1200); the next puzzle is one
+  you haven't tried, close to your rating. Like on chess.com the first try
+  counts — a wrong move, a hint or "show solution" and it counts as not
+  solved, but you can still finish it. Multi-move solutions, the opponent's
+  replies played for you, any checkmate accepted on the last move, and filters
+  for checkmate, forks, pins, discovered attacks, sacrifices, hanging pieces,
+  defence and endgames. When your own puzzles run out, the empty page points
+  here. The set is one JSON file (`server/src/chess/tacticsSet.json`,
+  460 KB); `npm run build:tactics` rebuilds it from the Lichess puzzle
+  database, and the page credits the database in its footer.
 
 ## [7.17.1] — 2026-09-27
 

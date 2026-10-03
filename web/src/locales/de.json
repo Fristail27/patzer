@@ -586,7 +586,48 @@
     "nextPuzzle": "Nächste Aufgabe",
     "openInReview": "Diese Stellung in der vollen Analyse öffnen",
     "correct": "Richtig!",
-    "wrong": "Nicht ganz — die Engine bevorzugt"
+    "wrong": "Nicht ganz — die Engine bevorzugt",
+    "tabs": {
+      "mine": "Aus deinen Partien",
+      "puzzles": "Taktikaufgaben"
+    },
+    "puzzles": {
+      "intro": "Taktikaufgaben aus der Lichess-Puzzle-Datenbank, passend zu deiner Puzzle-Wertung ausgesucht. Der erste Versuch zählt: Löst du sie, steigt deine Wertung.",
+      "loadError": "Die Aufgabe konnte nicht geladen werden.",
+      "allDone": "Du hast jede Aufgabe hier versucht – beeindruckend!",
+      "yourRating": "Deine Puzzle-Wertung",
+      "solvedOf": "{{solved}} von {{played}} gelöst",
+      "provisional": "Noch nicht eingependelt – in den ersten Aufgaben bewegt sie sich stark.",
+      "watch": "Schau dir den Zug deines Gegners an …",
+      "findWhite": "Weiß am Zug. Finde den besten Zug!",
+      "findBlack": "Schwarz am Zug. Finde den besten Zug!",
+      "wrong": "Nicht der beste Zug – das Brett ist zurückgesprungen. Versuch es noch einmal!",
+      "solved": "Gelöst!",
+      "solvedLate": "Gelöst – aber nicht im ersten Versuch, deshalb zählt sie als nicht gelöst.",
+      "showing": "Hier kommt die Lösung …",
+      "shownDone": "Das war die Lösung.",
+      "notRated": "Diese Aufgabe zählt schon als nicht gelöst – spiel sie trotzdem zu Ende.",
+      "hint": "Tipp",
+      "hintMove": "Zug zeigen",
+      "solution": "Lösung zeigen",
+      "tryIt": "Selbst nachspielen",
+      "next": "Nächste Aufgabe",
+      "puzzleRating": "Aufgaben-Wertung {{rating}}",
+      "onLichess": "Auf lichess.org",
+      "credit": "Aufgaben aus der Lichess-Puzzle-Datenbank (CC0):",
+      "rules": "Ein falscher Zug, ein Tipp oder die Lösung – dann zählt die Aufgabe als nicht gelöst. Jede Aufgabe kommt nur einmal.",
+      "themes": {
+        "all": "Alle",
+        "mate": "Matt",
+        "fork": "Gabel",
+        "pin": "Fesselung & Spieß",
+        "discovered": "Abzugsangriff",
+        "sacrifice": "Opfer",
+        "hanging": "Hängende & gefangene Figuren",
+        "defence": "Verteidigung",
+        "endgame": "Endspiel"
+      }
+    }
   },
   "learn": {
     "nav": "Lernen",
