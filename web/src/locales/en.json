@@ -257,7 +257,31 @@
       "lichess_unavailable": "Lichess can't be reached right now. Try again later.",
       "import_in_progress": "An import is already running — wait until it has finished.",
       "generic": "The import failed. Please try again later."
-    }
+    },
+    "pickMoves": "Show these moves",
+    "pickBoth": "both sides",
+    "why": {
+      "yourMove": "Your move",
+      "opponentMove": "Opponent's move",
+      "whiteMove": "White's move",
+      "blackMove": "Black's move",
+      "winChance": "Win chance for the side that moved: before → after",
+      "engineWanted": "The engine wanted:",
+      "line": "Line",
+      "coachSays": "In plain words",
+      "brilliant": "The engine's top move — and it gives up material. The sacrifice works: the position stays sound ({{after}}% win chance) because the opponent can't safely take what was offered.",
+      "great": "A critical move: the engine's first choice in a position where the alternatives were clearly worse, or one that saved a bad position ({{before}}% → {{after}}%).",
+      "best": "Exactly the engine's first choice — nothing better was available.",
+      "excellent": "Almost as good as the best move — the win chance barely moved ({{before}}% → {{after}}%).",
+      "good": "A reasonable move, a little weaker than the best one: the win chance dropped by {{drop}}% ({{before}}% → {{after}}%).",
+      "book": "A known opening move — straight from theory.",
+      "forced": "The only legal move — there was no choice.",
+      "inaccuracy": "An inaccuracy: the win chance dropped by {{drop}}% ({{before}}% → {{after}}%), about {{pawns}} pawns. Not a disaster, but there was a clearly better move.",
+      "mistake": "A mistake: the win chance dropped by {{drop}}% ({{before}}% → {{after}}%), about {{pawns}} pawns — a real chunk of the advantage went away.",
+      "blunder": "A blunder: the win chance collapsed by {{drop}}% ({{before}}% → {{after}}%), about {{pawns}} pawns. This kind of move usually loses material or allows a decisive attack.",
+      "miss": "A miss: the position was winning ({{before}}% win chance) and this move let the win slip ({{after}}%). There was a much stronger move on the board."
+    },
+    "regenerateReport": "Write it again"
   },
   "classification": {
     "brilliant": "Brilliant",

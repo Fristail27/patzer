@@ -257,7 +257,31 @@
       "lichess_unavailable": "Lichess ist gerade nicht erreichbar. Versuch es später erneut.",
       "import_in_progress": "Es läuft schon ein Import — warte, bis er fertig ist.",
       "generic": "Der Import ist fehlgeschlagen. Bitte versuch es später erneut."
-    }
+    },
+    "pickMoves": "Diese Züge zeigen",
+    "pickBoth": "beide Seiten",
+    "why": {
+      "yourMove": "Dein Zug",
+      "opponentMove": "Zug des Gegners",
+      "whiteMove": "Zug von Weiß",
+      "blackMove": "Zug von Schwarz",
+      "winChance": "Gewinnchance der ziehenden Seite: vorher → nachher",
+      "engineWanted": "Die Engine wollte:",
+      "line": "Variante",
+      "coachSays": "In einfachen Worten",
+      "brilliant": "Der beste Zug der Engine — und er gibt Material. Das Opfer funktioniert: Die Stellung bleibt gesund ({{after}} % Gewinnchance), weil der Gegner das Angebot nicht gefahrlos annehmen kann.",
+      "great": "Ein kritischer Zug: die erste Wahl der Engine in einer Stellung, in der die anderen Züge klar schlechter waren, oder ein Zug, der eine schlechte Stellung rettet ({{before}} % → {{after}} %).",
+      "best": "Genau die erste Wahl der Engine — besser ging es nicht.",
+      "excellent": "Fast so gut wie der beste Zug — die Gewinnchance hat sich kaum bewegt ({{before}} % → {{after}} %).",
+      "good": "Ein vernünftiger Zug, etwas schwächer als der beste: Die Gewinnchance sank um {{drop}} % ({{before}} % → {{after}} %).",
+      "book": "Ein bekannter Eröffnungszug — direkt aus der Theorie.",
+      "forced": "Der einzige legale Zug — es gab keine Wahl.",
+      "inaccuracy": "Eine Ungenauigkeit: Die Gewinnchance sank um {{drop}} % ({{before}} % → {{after}} %), etwa {{pawns}} Bauern. Keine Katastrophe, aber es gab einen klar besseren Zug.",
+      "mistake": "Ein Fehler: Die Gewinnchance sank um {{drop}} % ({{before}} % → {{after}} %), etwa {{pawns}} Bauern — ein guter Teil des Vorteils ist weg.",
+      "blunder": "Ein Patzer: Die Gewinnchance brach um {{drop}} % ein ({{before}} % → {{after}} %), etwa {{pawns}} Bauern. Solche Züge verlieren meist Material oder erlauben einen entscheidenden Angriff.",
+      "miss": "Verpasst: Die Stellung war gewonnen ({{before}} % Gewinnchance), und dieser Zug ließ den Sieg entgleiten ({{after}} %). Es gab einen viel stärkeren Zug."
+    },
+    "regenerateReport": "Neu schreiben"
   },
   "classification": {
     "brilliant": "Brillant",

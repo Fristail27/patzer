@@ -4,9 +4,49 @@ All notable changes to this project are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [7.18.0] — 2026-10-03
+
+### Game Review explains itself
+
+- **Why a move got its label.** The Moves tab now opens with a card for the
+  current move: whose move it was, its label, the win chance before and after
+  ("62% → 30%"), one sentence on why the engine called it that (a blunder:
+  the win chance collapsed by 32%, about 3 pawns; a miss: the position was
+  winning and this move let it slip; …), the move the engine wanted with how
+  its line goes on, and then the coach in plain words — what the move did or
+  allowed, and what the better move would have achieved. (The coach used to
+  live in its own tab; it is now right here, so the separate Coach tab is
+  gone.)
+- **Pick a category, walk its moves.** The counts in the Game Report table
+  (Black's 2 misses, White's 3 inaccuracies, …) are now clickable: the move
+  list highlights those moves, dims the rest, jumps to the first one, and
+  ‹ › arrows step through them. Clicking the category name picks both sides.
+- **The AI report knows whose move it is.** Key moments used to be written as
+  if every move was yours, so the opponent's blunder read as "you played …".
+  Each moment is now marked *Your move* / *Opponent's move*, and an opponent's
+  moment is about what it gave you and whether your answer took the chance.
+  Key moments also get the coach's facts (what the move allowed, the best
+  answer to it, the better move), so they say something concrete.
+- **A summary with something in it.** The summary used to get nothing but
+  accuracy and Elo, so all it could do was repeat them. It now gets the story
+  of the game — the result, the turning point, your costliest moves with the
+  better ones, your best finds, the opponent's gifts and whether you used
+  them, your weakest phase — and is told not to repeat numbers the page
+  already shows. Phase texts no longer get cut off after three lines, and key
+  moments are shown in full. Reports written by an older version are
+  rewritten on request ("Write it again" under every report).
 
 ### Fixed
+
+- **The eval bar was upside down for Black.** With the board turned for
+  Black, the bar put White's share at the top in Black's colour: when Black
+  was better, the white part grew. The colours now stay with their side.
+- **Material count like chess.com.** The number next to the captured pieces
+  was the total value one side had captured; it is now the material lead on
+  the board, and only next to the side that is ahead (a knight for two pawns
+  is +1, not +3).
+
+### Merged contributions (thanks, @eric-gpu)
 
 - **Real-board move sounds from the very first move.** With "Real board"
   chosen, the first move after opening a page still played the synthesized
@@ -15,13 +55,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   move in the opening trainer, or the first move in a lesson. The recordings
   now download as soon as the setting is known, and a move sound that comes
   while they're still loading waits for them (at most 0.4 s).
-### Added
 
 - **Insights: move quality.** A new card counts your own moves by
   classification — brilliant, great, best, … down to blunders — across your
   analyzed games, with a bar and a share for each, and lists your most recent
   brilliant moves; one click opens Game Review on that very move.
-### Added
 
 - **Opening trainer: deviations.** Real opponents rarely stay on the main
   line. Every built-in line now comes with the opponent's most common other
@@ -36,7 +74,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the analysis called your reply a mistake — the engine's move instead, so
   you practise what you should have played. Missed moves go into the daily
   review like any other.
-### Added
 
 - **Train: puzzles (beta).** A second tab next to the puzzles from your own
   games: about 4,000 popular Lichess puzzles (CC0) from rating 400 to 2600,
