@@ -754,7 +754,13 @@
       "win": "win",
       "loss": "loss",
       "draw": "draw"
-    }
+    },
+    "moveQuality": "Move quality",
+    "moveQualityTotal_one": "{{count}} move of yours",
+    "moveQualityTotal_other": "{{count}} moves of yours",
+    "brilliantMoves": "Your brilliant moves",
+    "noBrilliant": "No brilliant move yet – a brilliant move is a good sacrifice. It will show up here.",
+    "vsOpponent": "vs {{name}}"
   },
   "openings": {
     "nav": "Openings",

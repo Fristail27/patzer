@@ -15,6 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   move in the opening trainer, or the first move in a lesson. The recordings
   now download as soon as the setting is known, and a move sound that comes
   while they're still loading waits for them (at most 0.4 s).
+### Added
+
+- **Insights: move quality.** A new card counts your own moves by
+  classification — brilliant, great, best, … down to blunders — across your
+  analyzed games, with a bar and a share for each, and lists your most recent
+  brilliant moves; one click opens Game Review on that very move.
 
 ## [7.17.1] — 2026-09-27
 

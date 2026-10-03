@@ -754,7 +754,13 @@
       "win": "Sieg",
       "loss": "Niederlage",
       "draw": "Remis"
-    }
+    },
+    "moveQuality": "Zugqualität",
+    "moveQualityTotal_one": "{{count}} Zug von dir",
+    "moveQualityTotal_other": "{{count}} Züge von dir",
+    "brilliantMoves": "Deine brillanten Züge",
+    "noBrilliant": "Noch kein brillanter Zug – das ist ein gutes Opfer. Sobald dir einer gelingt, steht er hier.",
+    "vsOpponent": "gegen {{name}}"
   },
   "openings": {
     "nav": "Eröffnungen",
